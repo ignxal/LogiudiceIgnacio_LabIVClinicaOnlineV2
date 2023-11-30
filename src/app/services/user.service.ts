@@ -72,8 +72,8 @@ export class UserService {
   }
 
   update(item: UserM) {
-    const usuario = doc(this.userCollection, item.id_user);
-    return updateDoc(usuario, { ...item });
+    const user = doc(this.userCollection, item.id_user);
+    return updateDoc(user, { ...item });
   }
 
   async getOne(id: string): Promise<UserM> {
@@ -90,7 +90,7 @@ export class UserService {
     return this.collections.getAllSnapshot(this.collection, 'registerDate');
   }
 
-  getAllSpecialists() {
+  getAllSpecialists(): Observable<UserM[]> {
     const querys = [where('role', '==', 'Specialist')];
 
     return this.collections.getAllWhereSnapshot(

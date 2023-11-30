@@ -94,6 +94,8 @@ export class AuthService {
   }
 
   async activateAccount(oobCode: string) {
+    console.log(oobCode);
+    console.log(this.auth);
     await applyActionCode(this.auth, oobCode);
 
     this.usuariosService.getOne(this.auth.currentUser!.uid).then((user) => {

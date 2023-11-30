@@ -1,0 +1,299 @@
+<div *ngIf="userData as user">
+  <div class="col">
+    <img
+      class="img-thumbnail img-fluid"
+      src="{{
+        user.photoURL ? user.photoURL : '/assets/common/profile-user.png'
+      }}"
+      alt="{{ user.name }}"
+    />
+    <hr />
+    <div class="col">
+      <div class="col-md-12 info">
+        <p>
+          Usuario: <strong>{{ user.name }}</strong>
+        </p>
+        <p>
+          Email: <strong>{{ user.email }}</strong>
+        </p>
+        <div *ngIf="user.role == 'Patient'">
+          <p>
+            Obra Social: <strong>{{ user.healthInsurance }}</strong>
+          </p>
+          <hr />
+          <button
+            type="button"
+            class="btn btn-dark"
+            data-bs-toggle="modal"
+            data-bs-target="#medicalHistoryModal"
+            (click)="loadMedicalHistory()"
+          >
+            Ver mi historia clinica
+          </button>
+        </div>
+        <div *ngIf="user.role == 'Specialist'">
+          <p>Especialidades:</p>
+          <div>
+            <ul>
+              <li>{{ user.specialty }}</li>
+            </ul>
+          </div>
+          <hr />
+          <p>Dias y Horarios de Atencion:</p>
+          <div *ngIf="user.serviceHours == ''; else elseBlock">
+            <p>No tiene dias y horarios de atencion cargados</p>
+          </div>
+          <ng-template #elseBlock>
+            <div *ngFor="let hours of user.serviceHours; let i = index">
+              <ul>
+                <li>{{ hours }}</li>
+              </ul>
+            </div>
+          </ng-template>
+          <div>
+            <button
+              type="button"
+              class="btn btn-dark"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              Modificar horario de atencion
+            </button>
+          </div>
+        </div>
+        <div *ngIf="user.role == 'Admin'"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h1>Horario de atencion</h1>
+        <p>Elija su horario de atencion (abierto de 08:00 a 18:00)</p>
+
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th scope="col">Dia</th>
+              <th scope="col">Desde</th>
+              <th scope="col">Hasta</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let day of daysData; let i = index">
+              <td class="align-middle">
+                <input
+                  type="checkbox"
+                  class="btn-check"
+                  id="{{ day.value }}"
+                  autocomplete="off"
+                  [value]="
+                    day.value + '-' + day.valuesFrom + '-' + day.valuesTo
+                  "
+                  (change)="onCheckboxChange($event)"
+                />
+                <label class="btn btn-outline-dark day" for="{{ day.value }}">
+                  {{ day.name }}
+                </label>
+              </td>
+              <td class="align-middle">
+                <input
+                  type="time"
+                  list="times"
+                  class="form-control time"
+                  [(ngModel)]="day.valuesFrom"
+                />
+                <span class="validity"></span>
+              </td>
+              <td class="align-middle">
+                <input
+                  type="time"
+                  list="times"
+                  class="form-control time"
+                  [(ngModel)]="day.valuesTo"
+                />
+                <span class="validity"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-dark"
+          data-bs-dismiss="modal"
+          (click)="updateServiceHours()"
+        >
+          Guardar
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<datalist id="times">
+  >
+  <option value="08:00:00"></option>
+  <option value="08:30:00"></option>
+  <option value="09:00:00"></option>
+  <option value="09:30:00"></option>
+  <option value="10:00:00"></option>
+  <option value="10:30:00"></option>
+  <option value="11:00:00"></option>
+  <option value="11:30:00"></option>
+  <option value="12:00:00"></option>
+  <option value="12:30:00"></option>
+  <option value="13:00:00"></option>
+  <option value="13:30:00"></option>
+  <option value="14:00:00"></option>
+  <option value="14:30:00"></option>
+  <option value="15:00:00"></option>
+  <option value="15:30:00"></option>
+  <option value="16:00:00"></option>
+  <option value="16:30:00"></option>
+  <option value="17:00:00"></option>
+  <option value="17:30:00"></option>
+  <option value="18:00:00"></option>
+</datalist>
+
+<div
+  class="modal fade"
+  id="medicalHistoryModal"
+  tabindex="-1"
+  aria-labelledby="medicalHistoryModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h1 class="text-center">Historia clinica por especialidad</h1>
+        <hr />
+        <div *ngIf="profileSpecialtiesList.length > 0; else elseBlock">
+          <div
+            *ngFor="
+              let specialtyMedicalHistory of profileSpecialtiesList;
+              let i = index
+            "
+          >
+            <input
+              type="checkbox"
+              name="specialty"
+              class="btn-check"
+              id="{{ specialtyMedicalHistory }}"
+              autocomplete="off"
+              [value]="specialtyMedicalHistory"
+              (click)="createMedicalHistoryBySpecialty(specialtyMedicalHistory)"
+              data-bs-toggle="modal"
+              data-bs-target="#medicalHistoryDetailModal"
+            />
+
+            <label
+              class="btn btn-outline-dark"
+              for="{{ specialtyMedicalHistory }}"
+            >
+              {{ specialtyMedicalHistory }}
+            </label>
+          </div>
+        </div>
+        <ng-template #elseBlock>
+          <label class="btn btn-outline-danger"
+            >No hay historia clinica para mostrar</label
+          >
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="medicalHistoryDetailModal"
+  tabindex="-1"
+  aria-labelledby="medicalHistoryModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div
+          *ngIf="
+            patientMedicalHistory != undefined;
+            else elseBlockMedicalHistory
+          "
+        >
+          <div class="d-flex justify-content-between align-items-center">
+            <h3>
+              Historia clinica del paciente {{ patientMedicalHistory.patient }}
+            </h3>
+          </div>
+          <a class="btn btn-dark" (click)="download()">Descargar</a>
+          <hr />
+          <div>
+            <h4>Informacion de la ultima cita</h4>
+            <ul>
+              <li>Altura: {{ patientMedicalHistory.height }} cm..</li>
+              <li>Peso: {{ patientMedicalHistory.weight }} kg.</li>
+              <li>Temperatura: {{ patientMedicalHistory.temp }}°C</li>
+              <li>Presion: {{ patientMedicalHistory.pressure }} (media)</li>
+            </ul>
+          </div>
+          <hr />
+          <p>Historial de atencion de la especialidad {{ specialty }}</p>
+          <div
+            *ngFor="
+              let appointment of patientAppointmentsBySpecialty;
+              let i = index
+            "
+          >
+            <hr />
+            <ul>
+              <li>Fecha: {{ appointment.date }}</li>
+              <li>Especialista: {{ appointment.doctor }}</li>
+              <li>Diagnostico: {{ appointment.diagnosis }}</li>
+              <li>Observaciones:</li>
+              <ul>
+                <li *ngFor="let info of appointment.observations | keyvalue">
+                  {{ info.key }}: {{ info.value }}
+                </li>
+              </ul>
+              <li>Comentario de {{ appointment.appointmentInfo }}</li>
+            </ul>
+          </div>
+        </div>
+        <ng-template #elseBlockMedicalHistory>
+          <label class="btn btn-outline-danger"
+            >No hay historia clinica para mostrar</label
+          >
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

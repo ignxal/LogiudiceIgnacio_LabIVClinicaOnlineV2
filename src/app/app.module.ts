@@ -14,9 +14,10 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
+import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
 
 @NgModule({
-  declarations: [AppComponent, WelcomeComponent],
+  declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth(getApp())),

@@ -11,6 +11,7 @@ export interface UserM {
   age: number;
   photoURL: string;
   imageUrl: string[];
+  serviceHours: any | null;
   role: Roles;
   healthInsurance: string;
   specialty: string;

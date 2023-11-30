@@ -31,6 +31,24 @@ const routes: Routes = [
         (m) => m.VerificationModule
       ),
   },
+  {
+    path: 'patient',
+    loadChildren: () =>
+      import('./components/patient/patient.module').then(
+        (m) => m.PatientModule
+      ),
+    canActivate: [RolesGuard],
+    data: { role: ['Patient'], redirect: '/' },
+  },
+  {
+    path: 'specialist',
+    loadChildren: () =>
+      import('./components/specialist/specialist.module').then(
+        (m) => m.SpecialistModule
+      ),
+    canActivate: [RolesGuard],
+    data: { role: ['Specialist'], redirect: '/' },
+  },
 ];
 
 @NgModule({

@@ -8,6 +8,7 @@ import {
   getDocs,
   onSnapshot,
   orderBy,
+  Query,
   query,
   QueryCompositeFilterConstraint,
   setDoc,
@@ -126,15 +127,22 @@ export class CollectionsService {
   getAllWhereSnapshot<T = Collection>(
     collectionName: string,
     querys: QueryCompositeFilterConstraint,
-    order: string
+    order: string = ''
   ): Observable<T[]> {
-    let docs = query(
-      collection(this._firestore, collectionName),
-      querys,
-      orderBy(order)
-    );
+    let currentQuery!: Query<DocumentData>;
+
+    if (order == '') {
+      currentQuery = query(collection(this._firestore, collectionName), querys);
+    } else {
+      currentQuery = query(
+        collection(this._firestore, collectionName),
+        querys,
+        orderBy(order)
+      );
+    }
+
     return new Observable((subscriber) => {
-      const unsubscribe = onSnapshot(docs, (querySnapshot) => {
+      const unsubscribe = onSnapshot(currentQuery, (querySnapshot) => {
         const collection: T[] = [];
 
         querySnapshot.forEach((doc) => {
