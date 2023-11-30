@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="overlay-panel">
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="submitForm()"
+      novalidate
+      class="col-6 mt-4"
+    >
+      <img
+        class="mb-4"
+        src="../../../favicon.ico"
+        alt=""
+        width="72"
+        height="57"
+      />
+      <h1 class="h3 mb-3 fw-normal">Ingresá tus credenciales</h1>
+
+      <div class="form-floating">
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          required
+        />
+        <label for="email" class="form-label">Email:</label>
+        <div class="invalid-feedback">Por favor, ingrese un email.</div>
+      </div>
+
+      <div class="form-floating mt-2">
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          required
+        />
+        <label for="password" class="form-label">Contraseña:</label>
+        <div class="invalid-feedback">Por favor, ingrese una contraseña.</div>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="button-login mt-3 w-100 btn btn-lg btn-outline-light"
+      >
+        Iniciar sesión
+      </button>
+    </form>
+    <br />
+    <div style="height: 100%; width: 100%">
+      <mat-grid-list cols="3" rowHeight="100px" style="margin: 5em">
+        <mat-grid-tile *ngFor="let x of users" class="user-tile">
+          <button mat-button (click)="selectUser(x)" class="access-button">
+            <div class="user-profile">
+              <img
+                [src]="getImage(x.role)"
+                alt="Profile"
+                class="profile-image"
+              />
+              <div class="user-info">
+                <div>{{ x.fullName }}</div>
+                <div>{{ x.role }}</div>
+              </div>
+            </div>
+          </button>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</div>
