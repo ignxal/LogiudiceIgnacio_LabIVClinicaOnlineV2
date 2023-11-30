@@ -1,0 +1,77 @@
+<nav class="site-header sticky-top py-1" style="background-color: #151718">
+  <div class="container d-flex flex-column flex-md-row justify-content-between">
+    <a class="py-2" routerLink="">
+      <img
+        src="../../../../favicon.ico"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="d-block mb-2"
+      />
+    </a>
+    <div class="container d-flex flex-column flex-md-row justify-content-end">
+      <ng-container *ngIf="this.currentUser === undefined; else elseTemplate">
+        <a
+          class="py-2 d-none d-md-inline-block p-2"
+          routerLink="register"
+          routerLinkActive="text-white"
+          >Registrarse</a
+        >
+        <a
+          class="py-2 d-none d-md-inline-block p-2"
+          routerLink="login"
+          routerLinkActive="text-white"
+          >Iniciar sesion</a
+        >
+      </ng-container>
+      <ng-template #elseTemplate>
+        <div class="d-flex align-items-center" style="margin-right: 1em">
+          <a
+            *ngIf="this.currentUser?.role === 'Admin'"
+            class="py-2 d-none d-md-inline-block p-2"
+            href="#"
+            style="color: #f1f1f1 !important; margin-right: 0.5em"
+            routerLink="admin"
+            routerLinkActive="text-white"
+          >
+            {{ "Especialistas" }}
+          </a>
+          <a
+            *ngIf="this.currentUser?.role === 'Admin'"
+            class="py-2 d-none d-md-inline-block p-2"
+            href="#"
+            style="color: #f1f1f1 !important; margin-right: 0.5em"
+            routerLink="admin/register"
+            routerLinkActive="text-white"
+          >
+            {{ "Registrar" }}
+          </a>
+          <a
+            *ngIf="this.currentUser?.role === 'Admin'"
+            class="py-2 d-none d-md-inline-block p-2"
+            href="#"
+            style="color: #f1f1f1 !important; margin-right: 0.5em"
+            routerLink="admin/userlist"
+            routerLinkActive="text-white"
+          >
+            {{ "Usuarios" }}
+          </a>
+          <a
+            class="navbar-brand user"
+            href="#"
+            style="color: #f1f1f1 !important; margin-right: 0.5em"
+          >
+            {{ this.currentUser?.name + " " + this.currentUser?.lastName }}
+          </a>
+          <button class="btn btn-danger" (click)="logout()">LOGOUT</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <app-loader *ngIf="displayLoader"></app-loader>
+</nav>
