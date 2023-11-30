@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "clinica-online-v2"
+  },
+  "targets": {
+    "clinica-online-v2": {
+      "hosting": {
+        "clinica-online-v2": [
+          "clinica-online-v2"
+        ]
+      }
+    }
   }
 }
