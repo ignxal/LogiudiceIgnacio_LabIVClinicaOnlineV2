@@ -1,0 +1,35 @@
+<h1 class="text-center">Especialista</h1>
+<br />
+<div *ngIf="specialists?.length > 0; else elseBlock" class="container">
+  <div *ngFor="let x of specialists; let i = index">
+    <input
+      type="radio"
+      name="doctor"
+      class="btn-check"
+      id="{{ x.name }}"
+      autocomplete="off"
+      [value]="x.uid"
+      (click)="selectDoctor($event)"
+    />
+
+    <label class="btn btn-outline-dark aspect-ratio-1-1" for="{{ x.name }}">
+      <div class="row">
+        <div class="col-md-12">
+          {{ x.name }}
+        </div>
+        <div class="col-md-12">
+          <img
+            src="{{
+              x.photoURL ? x.photoURL : '/assets/common/profile-user.png'
+            }}"
+            alt="{{ x.name }}"
+            style="width: 50%"
+          />
+        </div>
+      </div>
+    </label>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <label class="info"><h3>No hay especialistas para mostrar</h3></label>
+</ng-template>

@@ -1,0 +1,36 @@
+<h1 class="text-center">Especialidad</h1>
+<br />
+<div *ngIf="specialtiesList?.length > 0; else elseBlock">
+  <div *ngFor="let specialty of specialtiesList; let i = index">
+    <div class="d-flex align-items-center justify-content-center"></div>
+    <input
+      type="radio"
+      name="specialty"
+      class="btn-check"
+      id="{{ specialty }}"
+      autocomplete="off"
+      [value]="specialty"
+      (click)="selectSpecialty($event)"
+    />
+    <label class="" for="{{ specialty }}">
+      <div
+        class="btn btn-outline-dark d-flex align-items-center justify-content-center"
+      >
+        <img
+          class="img-fluid"
+          src="/assets/specialties/{{ specialty }}.png"
+          onerror="this.onerror=null;this.src='/assets/specialties/default.png';"
+          alt="{{ specialty }}"
+          style="width: 50%"
+        />
+      </div>
+    </label>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <label class="info"
+    ><h3>
+      No se selecciono un especialista o no hay especialidades para mostrar
+    </h3></label
+  >
+</ng-template>

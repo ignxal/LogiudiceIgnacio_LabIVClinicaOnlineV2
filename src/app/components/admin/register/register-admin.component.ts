@@ -136,6 +136,7 @@ export class RegisterAdminComponent implements OnInit {
       lastName: this.lastName?.value,
       dni: this.dni?.value,
       age: this.age?.value,
+      serviceHours: null,
       photoURL: '',
       imageUrl: [],
       role: 'Admin',

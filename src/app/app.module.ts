@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +24,7 @@ import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
     provideAuth(() => getAuth(getApp())),
     provideFirestore(() => getFirestore(getApp())),
     provideStorage(() => getStorage(getApp())),
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     SharedModule,
@@ -32,7 +34,7 @@ import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
     MatGridListModule,
     MatButtonModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

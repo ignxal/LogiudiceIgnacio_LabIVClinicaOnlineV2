@@ -8,7 +8,7 @@ export class Appointment implements Collection {
     public id_specialist?: string | undefined,
     public specialistName?: string | undefined,
     public diagnosis: string = '',
-    public appointmentDate?: Date,
+    public appointmentDate?: any,
     public status: AppointmentStatus = AppointmentStatus.Pending,
     public rate: number = 0,
     public comments: string = '',

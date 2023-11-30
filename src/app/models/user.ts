@@ -14,7 +14,7 @@ export interface UserM {
   serviceHours: any | null;
   role: Roles;
   healthInsurance: string;
-  specialty: string;
+  specialty: any;
   emailVerified?: boolean;
   approved?: boolean;
   registerDate: Timestamp;

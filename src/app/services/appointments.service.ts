@@ -108,6 +108,24 @@ export class AppointmentsService {
     );
   }
 
+  getSpecialistAvailability(id_specialist: any) {
+    let querys = [where('id_specialist', '==', id_specialist)];
+
+    return this.collection.getAllWhereSnapshot<Appointment>(
+      this.collecionName,
+      and(...querys)
+    );
+  }
+
+  getPatientAvailability(id_patient: any) {
+    let querys = [where('id_patient', '==', id_patient)];
+
+    return this.collection.getAllWhereSnapshot<Appointment>(
+      this.collecionName,
+      and(...querys)
+    );
+  }
+
   async reserve(appointment: Appointment) {
     let querys = [
       where('id_patient', '==', appointment.id_patient),
@@ -119,7 +137,6 @@ export class AppointmentsService {
       and(...querys)
     );
 
-    console.log(result);
     if (!result) {
       return this.collection.addOne(this.collecionName, appointment);
     } else {

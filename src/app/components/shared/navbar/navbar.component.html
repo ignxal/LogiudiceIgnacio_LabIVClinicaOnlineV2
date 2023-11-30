@@ -1,5 +1,7 @@
 <nav class="site-header sticky-top py-1" style="background-color: #151718">
-  <div class="container d-flex flex-column flex-md-row justify-content-between">
+  <div
+    class="container d-flex flex-column flex-md-row justify-content-between align-items-center"
+  >
     <a class="py-2" routerLink="">
       <img
         src="../../../../favicon.ico"
@@ -13,6 +15,27 @@
         stroke-linejoin="round"
         class="d-block mb-2"
       />
+    </a>
+    <a
+      *ngIf="this.currentUser?.role === 'Patient'"
+      class="py-2 d-none d-md-inline-block p-2"
+      href="#"
+      style="color: #f1f1f1 !important; margin-left: 1em"
+      routerLink="patient/my-appointment"
+      routerLinkActive="text-white"
+    >
+      {{ "Mis turnos" }}
+    </a>
+
+    <a
+      *ngIf="this.currentUser?.role === 'Patient'"
+      class="py-2 d-none d-md-inline-block p-2"
+      href="#"
+      style="color: #f1f1f1 !important; margin-left: 1em"
+      routerLink="patient/request-appointment"
+      routerLinkActive="text-white"
+    >
+      {{ "Solicitar turno" }}
     </a>
     <div class="container d-flex flex-column flex-md-row justify-content-end">
       <ng-container *ngIf="this.currentUser === undefined; else elseTemplate">
@@ -31,6 +54,26 @@
       </ng-container>
       <ng-template #elseTemplate>
         <div class="d-flex align-items-center" style="margin-right: 1em">
+          <a
+            *ngIf="this.currentUser?.role === 'Patient'"
+            class="py-2 d-none d-md-inline-block p-2"
+            href="#"
+            style="color: #f1f1f1 !important; margin-right: 0.5em"
+            routerLink="patient"
+            routerLinkActive="text-white"
+          >
+            {{ "Perfil" }}
+          </a>
+          <a
+            *ngIf="this.currentUser?.role === 'Specialist'"
+            class="py-2 d-none d-md-inline-block p-2"
+            href="#"
+            style="color: #f1f1f1 !important; margin-right: 0.5em"
+            routerLink="specialist"
+            routerLinkActive="text-white"
+          >
+            {{ "Perfil" }}
+          </a>
           <a
             *ngIf="this.currentUser?.role === 'Admin'"
             class="py-2 d-none d-md-inline-block p-2"

@@ -1,0 +1,72 @@
+<h1 class="text-center">Turno</h1>
+<br />
+<div *ngIf="appointments.length > 0; else elseBlock">
+  <div *ngIf="specialty !== ''; else elseBlock">
+    <div *ngFor="let appointment of appointments; let i = index">
+      <input
+        type="radio"
+        name="appointment"
+        class="btn-check"
+        id="{{ appointment }}"
+        autocomplete="off"
+        [value]="appointment"
+        (click)="selectApointment($event)"
+      />
+
+      <label
+        class="btn btn-outline-dark"
+        for="{{ appointment }}"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          {{ appointment | date : "yyyy-MM-dd h:mm a" }}
+        </div>
+      </label>
+    </div>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <label class="info"
+    ><h3>
+      No se selecciono una especialidad o no hay turnos para mostrar
+    </h3></label
+  >
+</ng-template>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Especialista: {{ specialistName }}</p>
+        <p>Especialidad: {{ specialty }}</p>
+        <p>Fecha: {{ selectedDate }}</p>
+        <p>Paciente: {{ patientName }}</p>
+      </div>
+      <br />
+      <div class="modal-footer">
+        <button
+          type="button "
+          class="btn btn-dark text-center"
+          data-bs-dismiss="modal"
+          (click)="createAppointment()"
+        >
+          Guardar
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

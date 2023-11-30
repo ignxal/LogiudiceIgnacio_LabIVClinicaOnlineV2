@@ -99,4 +99,27 @@ export class UserService {
       'name'
     );
   }
+
+  getAllApprovedSpecialists(): Observable<UserM[]> {
+    const querys = [
+      where('role', '==', 'Specialist'),
+      where('approved', '==', true),
+    ];
+
+    return this.collections.getAllWhereSnapshot(
+      this.collection,
+      and(...querys),
+      'name'
+    );
+  }
+
+  getAllPatients(): Observable<UserM[]> {
+    const querys = [where('role', '==', 'Patient')];
+
+    return this.collections.getAllWhereSnapshot(
+      this.collection,
+      and(...querys),
+      'name'
+    );
+  }
 }
