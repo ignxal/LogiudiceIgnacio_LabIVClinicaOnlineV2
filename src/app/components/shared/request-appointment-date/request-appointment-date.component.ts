@@ -39,30 +39,14 @@ export class RequestAppointmentDateComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (!changes['doctor']) {
+      return;
+    }
     this.user = this.auth.loggedUser;
-    if (changes['doctor'] !== undefined) {
-      this.doctor = changes['doctor'].currentValue;
-      this.specialty = '';
-    }
-
-    if (changes['specialty'] !== undefined) {
-      this.specialty = changes['specialty'].currentValue;
-    }
-
-    if (changes['patient'] !== undefined) {
-      this.patient = changes['patient'].currentValue;
-    }
-
-    if (changes['selectedDate'] !== undefined) {
-      this.patient = changes['selectedDate'].currentValue;
-    }
+    this.doctor = changes['doctor'].currentValue;
 
     if (this.user.role == 'Patient') {
       this.patient = this.user.uid;
-    }
-
-    if (!this.doctor) {
-      return;
     }
 
     this.appointments = [];
@@ -74,44 +58,26 @@ export class RequestAppointmentDateComponent implements OnInit {
       this.doctorAvailability = specialist.serviceHours;
       this.generateDaysData(this.doctorAvailability);
 
-      this.appointmentService
-        .getSpecialistAvailability(specialist.uid)
-        .subscribe({
-          next: (resSpe: any) => {
-            const filteredAvailability = this.appointments.filter((x) => {
-              return x !== resSpe?.appointmentDate;
+      this.appointmentService.getPatientAvailability(this.user.uid).subscribe({
+        next: (resPat: any) => {
+          if (resPat) {
+            const finalArray = this.appointments.filter((y) => {
+              return y !== resPat.appointmentDate;
             });
-            this.appointments = filteredAvailability;
+            this.appointments = finalArray;
+          }
 
-            this.appointmentService
-              .getPatientAvailability(this.user.uid)
-              .subscribe({
-                next: (resPat: any) => {
-                  const finalArray = this.appointments.filter((y) => {
-                    return y !== resPat.appointmentDate;
-                  });
-                  this.appointments = finalArray;
-                  this.loaderService.hide();
-                },
-                error: (err: any) => {
-                  console.log(err);
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Operación erronea!',
-                    text: 'Se produjo un error al intentar obtener datos',
-                  });
-                },
-              });
-          },
-          error: (err: any) => {
-            console.log(err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Operación erronea!',
-              text: 'Se produjo un error al intentar obtener datos',
-            });
-          },
-        });
+          this.loaderService.hide();
+        },
+        error: (err: any) => {
+          console.log(err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Operación erronea!',
+            text: 'Se produjo un error al intentar obtener datos',
+          });
+        },
+      });
     });
   }
 
@@ -206,7 +172,7 @@ export class RequestAppointmentDateComponent implements OnInit {
   }
 
   createAppointment() {
-    if (!this.specialistName || !this.patientName) {
+    if (!this.specialistName || !this.selectedDate) {
       Swal.fire({
         icon: 'error',
         title: 'Operación erronea!',

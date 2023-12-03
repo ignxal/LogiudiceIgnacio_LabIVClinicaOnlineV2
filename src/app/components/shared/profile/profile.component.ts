@@ -186,7 +186,7 @@ export class ProfileComponent implements OnInit {
         next: (res) => {
           this.patientAppointmentsBySpecialty = res;
           this.medicalHistoryService
-            .getMedicalHistoryByPatient(this.userData.displayName)
+            .getMedicalHistoryByPatient(this.userData.uid)
             .subscribe({
               next: (mh) => {
                 this.patientMedicalHistory = mh;

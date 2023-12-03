@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-request-appointment-specialty',
   templateUrl: './request-appointment-specialty.component.html',
-  styleUrls: ['./request-appointment-specialty.component.css'],
+  styleUrls: ['./request-appointment-specialty.component.scss'],
 })
 export class RequestAppointmentSpecialtyComponent implements OnInit {
   specialtiesList: any;
