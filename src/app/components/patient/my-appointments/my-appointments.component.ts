@@ -43,7 +43,7 @@ export class MyAppointmentsComponent implements OnInit {
   appointmentComments!: any;
   appointmentRate: number = 0;
   doctorClarity: string = '';
-  allAppointments: any;
+  allAppointments!: Appointment[];
   searchValue: string = '';
 
   form!: FormGroup;
@@ -106,7 +106,7 @@ export class MyAppointmentsComponent implements OnInit {
         this.specialtiesList = s.map((x) => x.name);
 
         this.appointmentsSub = this.appointmentsService
-          .getAppointmentsByPatient(this.userData.displayName)
+          .getAppointmentsByPatient(this.userData.uid)
           .subscribe({
             next: (x) => {
               this.appointmentsByPatient = x;
@@ -258,7 +258,7 @@ export class MyAppointmentsComponent implements OnInit {
         role = 'Administrador';
       }
       const reason =
-        role + ' ' + this.userData.displayName + ': ' + this.cancelReason.value;
+        role + ' ' + this.userData.name + ': ' + this.cancelReason.value;
       this.appointment.comments = reason;
       this.appointment.status = this.appointmentNewStatus;
       this.appointmentsService
@@ -391,11 +391,9 @@ export class MyAppointmentsComponent implements OnInit {
 
   search() {
     this.appointments = [];
-    let appointmentInfo = '';
     let date = '';
     let diagnosis = '';
     let specialistName = '';
-    let patient = '';
     let status = '';
     let statusFormated = '';
     let specialty = '';
@@ -411,68 +409,47 @@ export class MyAppointmentsComponent implements OnInit {
       return;
     }
 
-    this.allAppointments.forEach(
-      (element: {
-        appointmentInfo: { toString: () => string } | undefined;
-        date: { toString: () => string } | undefined;
-        diagnosis: { toString: () => string } | undefined;
-        specialistName: { toString: () => string } | undefined;
-        patient: { toString: () => string } | undefined;
-        specialty: string | undefined;
-        status: AppointmentStatus | undefined;
-        comments: string | undefined;
-      }) => {
-        if (element.appointmentInfo != undefined) {
-          appointmentInfo = element.appointmentInfo.toString().toLowerCase();
-        }
-
-        if (element.date) {
-          date = element.date.toString().toLowerCase();
-        }
-
-        if (element.diagnosis) {
-          diagnosis = element.diagnosis.toString().toLowerCase();
-        }
-
-        if (element.specialistName) {
-          specialistName = element.specialistName.toString().toLowerCase();
-        }
-
-        if (element.patient) {
-          patient = element.patient.toString().toLowerCase();
-        }
-
-        if (element.specialty) {
-          specialty = element.specialty.toString().toLowerCase();
-        }
-
-        if (element.status) {
-          status = element.status;
-          statusFormated = new AppointmentStatusPipe()
-            .transform(status)!
-            .toString()
-            .toLowerCase();
-        }
-
-        if (element.comments) {
-          comments = element.comments;
-          commentsFormated = JSON.stringify(comments).toString().toLowerCase();
-        }
-
-        if (
-          appointmentInfo.includes(this.searchValue.toLowerCase()) ||
-          date.includes(this.searchValue.toLowerCase()) ||
-          diagnosis.includes(this.searchValue.toLowerCase()) ||
-          specialistName.includes(this.searchValue.toLowerCase()) ||
-          patient.includes(this.searchValue.toLowerCase()) ||
-          specialty.includes(this.searchValue.toLowerCase()) ||
-          statusFormated.includes(this.searchValue.toLowerCase()) ||
-          commentsFormated.includes(this.searchValue.toLowerCase())
-        ) {
-          this.appointments.push(element);
-        }
+    this.allAppointments.forEach((element) => {
+      if (element.appointmentDate) {
+        date = element.appointmentDate.toString().toLowerCase();
       }
-    );
+
+      if (element.diagnosis) {
+        diagnosis = element.diagnosis.toString().toLowerCase();
+      }
+
+      if (element.specialistName) {
+        specialistName = element.specialistName.toString().toLowerCase();
+      }
+
+      if (element.specialty) {
+        specialty = element.specialty.toString().toLowerCase();
+      }
+
+      if (element.status) {
+        status = element.status;
+        statusFormated = new AppointmentStatusPipe()
+          .transform(status)!
+          .toString()
+          .toLowerCase();
+      }
+
+      if (element.comments) {
+        comments = element.comments;
+        commentsFormated = JSON.stringify(comments).toString().toLowerCase();
+      }
+
+      if (
+        date.includes(this.searchValue.toLowerCase()) ||
+        diagnosis.includes(this.searchValue.toLowerCase()) ||
+        specialistName.includes(this.searchValue.toLowerCase()) ||
+        specialty.includes(this.searchValue.toLowerCase()) ||
+        statusFormated.includes(this.searchValue.toLowerCase()) ||
+        commentsFormated.includes(this.searchValue.toLowerCase())
+      ) {
+        this.appointments.push(element);
+      }
+    });
 
     this.searchValue = '';
   }

@@ -36,7 +36,7 @@
   </button>
 </div>
 <hr />
-<div *ngIf="appointments?.length > 0; else elseBlock">
+<div *ngIf="this.appointments?.length > 0; else elseBlock">
   <div *ngIf="this.appointments as appointments; else elseBlock">
     <table class="table table-hover text-center">
       <thead>
@@ -51,10 +51,10 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let appointment of appointments; let i = index">
+        <tr *ngFor="let appointment of this.appointments; let i = index">
           <td class="align-middle">{{ appointment.specialistName }}</td>
           <td class="align-middle">{{ appointment.specialty }}</td>
-          <td class="align-middle">{{ appointment.date }}</td>
+          <td class="align-middle">{{ appointment.appointmentDate }}</td>
           <td class="align-middle">
             <label class="btn info">{{ appointment.status }}</label>
           </td>
@@ -138,8 +138,12 @@
     <div class="modal-content">
       <div class="modal-body">
         <h1>Especialidades</h1>
-        <div *ngIf="specialtiesByPatient?.length > 0; else elseBlockSpecialty">
-          <div *ngFor="let specialty of specialtiesByPatient; let i = index">
+        <div
+          *ngIf="this.specialtiesByPatient?.length > 0; else elseBlockSpecialty"
+        >
+          <div
+            *ngFor="let specialty of this.specialtiesByPatient; let i = index"
+          >
             <input
               type="radio"
               name="specialty"
