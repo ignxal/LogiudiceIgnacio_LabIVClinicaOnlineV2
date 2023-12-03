@@ -25,22 +25,24 @@ export class CollectionsService {
   constructor(private _firestore: Firestore) {}
 
   addOne(collectionName: string, document: Collection) {
-    return new Promise<DocumentReference<DocumentData>>((resolve) => {
+    return new Promise<DocumentReference<DocumentData>>((resolve, reject) => {
       let collectionRef = collection(this._firestore, collectionName);
       let docRef: DocumentReference<DocumentData>;
 
-      if (
-        document.id == '' ||
-        document.id == undefined ||
-        document.id == null
-      ) {
+      if (!document.id) {
         docRef = doc(collectionRef);
         document.id = docRef.id;
       } else {
         docRef = doc(collectionRef, document.id);
       }
-      setDoc(docRef, { ...document });
-      resolve(docRef);
+      setDoc(docRef, { ...document })
+        .then((res) => {
+          return resolve(docRef);
+        })
+        .catch((err) => {
+          console.error(err);
+          return reject(err);
+        });
     });
   }
 

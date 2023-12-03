@@ -132,16 +132,27 @@ export class AppointmentsService {
       where('appointmentDate', '==', appointment.appointmentDate),
     ];
 
-    let result = await !this.collection.existsQuery(
-      this.collecionName,
-      and(...querys)
-    );
-
-    if (!result) {
-      return this.collection.addOne(this.collecionName, appointment);
-    } else {
-      return false;
-    }
+    return this.collection
+      .existsQuery(this.collecionName, and(...querys))
+      .then((res) => {
+        if (!res) {
+          return this.collection
+            .addOne(this.collecionName, appointment)
+            .then(() => {
+              return true;
+            })
+            .catch((err) => {
+              console.log(err);
+              return false;
+            });
+        } else {
+          return false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
   }
 
   update(appointment: Appointment) {
