@@ -1,5 +1,10 @@
+h3 {
+  margin: auto;
+  padding: 0.3em;
+}
+
 .btn {
-  max-width: 19em;
+  width: 100%;
   margin: 5px;
   color: rgb(232, 230, 227);
 }
@@ -17,9 +22,17 @@
 .info {
   background-color: rgb(232, 230, 227);
   border: 3px solid rgb(232, 230, 227);
-  border-radius: 10px;
+  color: black;
+  border-radius: 5px;
 }
 
-p {
-  font-size: 18px;
+.aspect-ratio-1-1 {
+  object-position: center;
+  width: 180px;
+  height: 150px;
+  padding: 8px;
+}
+
+.container {
+  text-align: center;
 }

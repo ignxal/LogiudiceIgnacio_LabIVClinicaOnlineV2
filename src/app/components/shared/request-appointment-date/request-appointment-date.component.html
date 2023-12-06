@@ -19,7 +19,7 @@
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
       >
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-center">
           {{ appointment | date : "yyyy-MM-dd h:mm a" }}
         </div>
       </label>
@@ -41,6 +41,9 @@
 >
   <div class="modal-dialog">
     <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title">Confirmar turno</h1>
+      </div>
       <div class="modal-body">
         <p>Especialista: {{ specialistName }}</p>
         <p>Especialidad: {{ specialty }}</p>
