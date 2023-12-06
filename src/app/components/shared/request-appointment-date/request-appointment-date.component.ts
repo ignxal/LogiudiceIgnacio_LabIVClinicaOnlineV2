@@ -7,7 +7,7 @@ import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { UserM } from 'src/app/models/user';
 import { Appointment, AppointmentStatus } from 'src/app/models/appointment';
-import { User } from '@angular/fire/auth';
+import { Availability } from 'src/app/models/availability';
 
 @Component({
   selector: 'app-request-appointment-date',
@@ -18,13 +18,12 @@ export class RequestAppointmentDateComponent implements OnInit {
   @Input() doctor = '';
   @Input() patient = '';
   @Input() specialty = '';
-  doctorAvailability: any[] = [];
   selectedDate: any;
   appointments: any[] = [];
   user: any;
   specialistName: any;
   currentSpecialist!: UserM;
-  patientName: any;
+  patientName!: string;
 
   constructor(
     private loaderService: LoaderService,
@@ -36,6 +35,7 @@ export class RequestAppointmentDateComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.auth.loggedUser;
+    this.patientName = this.user.name;
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -56,112 +56,131 @@ export class RequestAppointmentDateComponent implements OnInit {
     this.userService.getOne(this.doctor).then((specialist: UserM) => {
       this.currentSpecialist = specialist;
       this.specialistName = specialist.name;
-      this.doctorAvailability = specialist.serviceHours;
-      this.generateDaysData(this.doctorAvailability);
+      this.generateDaysData(specialist.serviceHours);
 
-      this.appointmentService.getPatientAvailability(this.user.uid).subscribe({
-        next: (resPat: any) => {
-          if (resPat) {
-            const finalArray = this.appointments.filter((y) => {
-              return y !== resPat.appointmentDate;
+      this.appointmentService
+        .getAppointmentsBySpecialist(specialist.uid)
+        .subscribe({
+          next: (specialistAppointments: any) => {
+            const datesSpecialist = specialistAppointments.map((x: any) => {
+              return x.appointmentDate;
             });
-            this.appointments = finalArray;
-          }
 
-          this.loaderService.hide();
-        },
-        error: (err: any) => {
-          console.log(err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Operación erronea!',
-            text: 'Se produjo un error al intentar obtener datos',
-          });
-        },
-      });
+            if (specialistAppointments) {
+              this.appointments = this.appointments.filter((y) => {
+                return !specialistAppointments.includes(y);
+              });
+            }
+
+            this.appointmentService
+              .getPatientAvailability(this.user.uid)
+              .subscribe({
+                next: (resPat: any) => {
+                  const datesPatient = resPat.map((x: any) => {
+                    return x.appointmentDate;
+                  });
+
+                  if (datesPatient) {
+                    this.appointments = this.appointments.filter((y) => {
+                      return !datesPatient.includes(y);
+                    });
+                  }
+
+                  this.loaderService.hide();
+                },
+                error: (err: any) => {
+                  console.log(err);
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Operación erronea!',
+                    text: 'Se produjo un error al intentar obtener datos',
+                  });
+                },
+              });
+          },
+          error: (err: any) => {
+            console.log(err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Operación erronea!',
+              text: 'Se produjo un error al intentar obtener datos',
+            });
+          },
+        });
     });
   }
 
-  generateDaysData(data: string | any[]) {
-    var day: any;
-    var startHour: any;
-    var endHour: any;
-
-    for (let i = 0; i < data.length; i++) {
-      var dayArr = data[i].split('-');
-      day = dayArr[0];
-      startHour = dayArr[1];
-      endHour = dayArr[2];
+  generateDaysData(availabilityList: string[]) {
+    availabilityList.forEach((availability) => {
+      const [day, startHour, endHour] = availability.split('-');
       this.generateDays(day, startHour, endHour);
-    }
+    });
   }
 
-  generateDates(startHour: any, endHour: any) {
-    var times: any[] = [];
-    var startHourArr = startHour.split(':');
-    var endHourArr = endHour.split(':');
-    var startHourNumber = parseInt(startHourArr[0]);
-    var endHourNumber = parseInt(endHourArr[0]);
-    var startMinuteNumber = parseInt(startHourArr[1]);
-    var hour = startHourNumber;
-    var minute = startMinuteNumber;
-    var time = '';
+  generateDates(startHour: string, endHour: string): string[] {
+    const times: string[] = [];
+    const [startHourNumber, startMinuteNumber] = startHour
+      .split(':')
+      .map(Number);
+    const [endHourNumber] = endHour.split(':').map(Number);
+
+    let hour = startHourNumber;
+    let minute = startMinuteNumber;
 
     while (hour < endHourNumber) {
-      if (minute == 0) {
-        time = hour + ':' + minute + '0';
-      } else {
-        time = hour + ':' + minute;
-      }
-      times.push(time);
+      const formattedMinute = minute < 10 ? `0${minute}` : `${minute}`;
+      times.push(`${hour}:${formattedMinute}`);
+
       minute += 30;
-      if (minute == 60) {
+
+      if (minute === 60) {
         hour += 1;
         minute = 0;
       }
     }
+
     return times;
   }
 
-  generateDays(day: any, startHour: any, endHour: any) {
-    var hours = this.generateDates(startHour, endHour);
-    var date = new Date();
-    var dayOfWeek = date.getDay();
-    var dayOfWeekNumber = this.getDayOfWeekNumber(day);
-    var daysToAdd = dayOfWeekNumber - dayOfWeek;
+  generateDays(day: string, startHour: string, endHour: string) {
+    const hours = this.generateDates(startHour, endHour);
+    const date = new Date();
+    const dayOfWeek = date.getDay();
+    const dayOfWeekNumber = this.getDayOfWeekNumber(day);
+    let daysToAdd = dayOfWeekNumber - dayOfWeek;
+
     if (daysToAdd < 0) {
       daysToAdd += 7;
     }
+
     date.setDate(date.getDate() + daysToAdd);
+
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < hours.length; j++) {
-        this.appointments.push(
-          new Date(date).toLocaleDateString('af-ZA', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-          }) +
-            ' ' +
-            hours[j]
-        );
+        const formattedDate = new Date(date).toLocaleDateString('af-ZA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        });
+        this.appointments.push(`${formattedDate} ${hours[j]}`);
       }
       date.setDate(date.getDate() + 7);
     }
   }
 
-  getDayOfWeekNumber(day: any) {
-    switch (day) {
-      case 'monday':
+  getDayOfWeekNumber(day: string): number {
+    switch (day.toLowerCase()) {
+      case 'lunes':
         return 1;
-      case 'tuesday':
+      case 'martes':
         return 2;
-      case 'wednesday':
+      case 'miercoles':
         return 3;
-      case 'thursday':
+      case 'jueves':
         return 4;
-      case 'friday':
+      case 'viernes':
         return 5;
-      case 'saturday':
+      case 'sabado':
         return 6;
       default:
         return 0;
@@ -210,6 +229,8 @@ export class RequestAppointmentDateComponent implements OnInit {
           icon: 'success',
           title: 'Operación exitosa!',
           text: 'Se creo la cita correctamente',
+        }).then(() => {
+          location.reload();
         });
       })
       .catch((error: any) => {
@@ -220,7 +241,6 @@ export class RequestAppointmentDateComponent implements OnInit {
         });
       })
       .finally(() => {
-        location.reload();
         this.loaderService.hide();
       });
   }
