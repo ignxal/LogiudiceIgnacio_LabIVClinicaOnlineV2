@@ -40,6 +40,7 @@ export class RequestAppointmentDateComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes['doctor']) {
+      this.appointments = [];
       return;
     }
     this.user = this.auth.loggedUser;

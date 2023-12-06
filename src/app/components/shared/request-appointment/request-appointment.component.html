@@ -1,12 +1,12 @@
 <div class="row align-items-md-stretch">
-  <div class="col-md-3">
+  <div class="col-md-4">
     <app-request-appointment-specialty
       (selectedSpecialtyEvent)="selectedSpecialty($event)"
     >
     </app-request-appointment-specialty>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-4">
     <app-request-appointment-specialist
       (selectedDoctorEvent)="selectedDoctor($event)"
       [specialty]="specialty"
@@ -14,13 +14,13 @@
     </app-request-appointment-specialist>
   </div>
 
-  <div class="col-md-3" *ngIf="user == 'Admin'">
+  <div class="col-md-4" *ngIf="user == 'Admin'">
     <app-request-appointment-patient
       (selectedPatientEvent)="selectedPatient($event)"
     ></app-request-appointment-patient>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-4">
     <app-request-appointment-date
       [doctor]="doctor"
       [patient]="patient"

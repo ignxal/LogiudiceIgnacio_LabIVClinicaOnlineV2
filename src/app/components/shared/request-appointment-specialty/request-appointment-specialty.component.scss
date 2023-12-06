@@ -1,11 +1,22 @@
 .btn {
-  width: 100%;
+  max-width: 19em;
   margin: 5px;
+  color: rgb(232, 230, 227);
+}
+
+.btn:hover {
+  color: white;
+  transition: ease 0.5s;
+  background-color: #3b424a;
+}
+
+.btn:active {
+  scale: (0.9);
 }
 
 .info {
-  background-color: blue;
-  border: 3px solid blue;
+  background-color: rgb(232, 230, 227);
+  border: 3px solid rgb(232, 230, 227);
   border-radius: 10px;
 }
 
