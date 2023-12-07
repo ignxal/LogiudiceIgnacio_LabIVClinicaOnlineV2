@@ -1,0 +1,276 @@
+<div class="main-container">
+  <div class="d-flex justify-content-center" style="margin: 0 1em">
+    <button
+      type="button"
+      class="btn btn-dark"
+      data-bs-toggle="modal"
+      data-bs-target="#specialtyModal"
+    >
+      Filtrar por especialidad
+    </button>
+    <button
+      type="button"
+      class="btn btn-dark"
+      data-bs-toggle="modal"
+      data-bs-target="#specialistModal"
+    >
+      Filtrar por especialista
+    </button>
+  </div>
+  <hr />
+  <div *ngIf="appointments?.length > 0; else elseBlock">
+    <div *ngIf="this.appointments as appointments; else elseBlock">
+      <table class="table table-hover text-center">
+        <thead>
+          <tr>
+            <th scope="col">Especialista</th>
+            <th scope="col">Especialidad</th>
+            <th scope="col">Paciente</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Estado</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let appointment of appointments; let i = index">
+            <td class="align-middle">{{ appointment.specialistName }}</td>
+            <td class="align-middle">{{ appointment.specialty }}</td>
+            <td class="align-middle">{{ appointment.patientName }}</td>
+
+            <td class="align-middle">
+              {{ appointment.appointmentDate }}
+            </td>
+            <td class="align-middle">
+              <label class="btn info">{{ appointment.status }}</label>
+            </td>
+            <td class="align-middle" *ngIf="appointment.status == 'Pending'">
+              <button
+                type="button"
+                class="btn btn-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+                (click)="openCancelOrRejectAppointment(appointment, 'Canceled')"
+              >
+                Cancelar
+              </button>
+            </td>
+
+            <td
+              class="align-middle"
+              *ngIf="
+                appointment.status == 'Canceled' ||
+                appointment.status == 'Rejected' ||
+                appointment.status == 'Closed'
+              "
+            >
+              <button
+                type="button"
+                class="btn yellowC"
+                data-bs-toggle="modal"
+                data-bs-target="#infoModal"
+                (click)="openInfoAppointment(appointment)"
+              >
+                Ver
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #elseBlock>
+    <div class="container">
+      <label class="filtrados"><h3>No hay turnos filtrados</h3></label>
+    </div>
+  </ng-template>
+</div>
+
+<div
+  class="modal fade"
+  id="specialtyModal"
+  tabindex="-1"
+  aria-labelledby="specialtyModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h1>Especialidades</h1>
+        <div *ngIf="specialtiesList?.length > 0; else elseBlockSpecialties">
+          <div *ngFor="let specialty of specialtiesList; let i = index">
+            <input
+              type="radio"
+              name="specialty"
+              class="btn-check"
+              id="{{ specialty }}"
+              autocomplete="off"
+              [value]="specialty"
+              (click)="selectSpecialty($event)"
+              data-bs-dismiss="modal"
+            />
+
+            <label class="btn btn-dark" for="{{ specialty }}">
+              <div class="d-flex align-items-center justify-content-between">
+                {{ specialty }}
+                <img
+                  class="img-fluid"
+                  src="/assets/specialties/{{ specialty }}.png"
+                  onerror="this.onerror=null;this.src='/assets/specialties/default.png';"
+                  alt="{{ specialty }}"
+                  style="width: 15%"
+                />
+              </div>
+            </label>
+          </div>
+        </div>
+        <ng-template #elseBlockSpecialties>
+          <label class="filtrados"
+            ><h2>No hay turnos de esa especialidad para mostrar</h2></label
+          >
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn redC" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="specialistModal"
+  tabindex="-1"
+  aria-labelledby="specialistModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h1>Especialistas</h1>
+        <div *ngIf="doctors?.length > 0; else elseBlock">
+          <div *ngFor="let doctor of doctors; let i = index">
+            <input
+              type="radio"
+              name="doctor"
+              class="btn-check"
+              id="{{ doctor.name }}"
+              autocomplete="off"
+              [value]="doctor.uid"
+              (click)="selectDoctor($event)"
+              data-bs-dismiss="modal"
+            />
+
+            <label class="btn btn-dark" for="{{ doctor.name }}">
+              <div class="d-flex align-items-center justify-content-between">
+                {{ doctor.name }}
+                <img
+                  class="img-fluid"
+                  src="{{
+                    doctor.photoURL
+                      ? doctor.photoURL
+                      : '/assets/common/profile-user.png'
+                  }}"
+                  alt="{{ doctor.name }}"
+                  style="width: 15%"
+                />
+              </div>
+            </label>
+          </div>
+        </div>
+        <ng-template #elseBlock>
+          <label class="btn btn-outline-danger"
+            >No hay especialistas que mostrar</label
+          >
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="cancelModal"
+  tabindex="-1"
+  aria-labelledby="cancelModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h1>Cancelacion</h1>
+        <div class="form-group col-md-12">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ingrese motivo de la cancelacion/rechazo"
+              [formControl]="cancelReason"
+            />
+          </div>
+          <div class="input-group-append">
+            <button
+              class="btn btn-dark"
+              type="button"
+              (click)="cancelAppointment()"
+              data-bs-dismiss="modal"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer text-center">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="infoModal"
+  tabindex="-1"
+  aria-labelledby="infoModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body text-left">
+        <h1>Detalle del turno</h1>
+        <p>Estado: {{ appointmentStatus }}</p>
+        <p>Fecha: {{ appointmentDate }}</p>
+        <div *ngIf="appointmentDiagnostic != ''">
+          <p>Diagnostico: {{ appointmentDiagnostic }}</p>
+        </div>
+        <p>Comentarios:</p>
+        <ul>
+          <li>{{ appointmentComments }}</li>
+        </ul>
+      </div>
+      <div class="modal-footer text-center">
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

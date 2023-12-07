@@ -249,7 +249,7 @@ export class AppointmentsSpecialistComponent {
           Swal.fire({
             icon: 'success',
             title: 'Operación exitosa!',
-            text: 'Turno finalizado',
+            text: 'Turno Cancelado',
           });
 
           this.loaderService.hide();
