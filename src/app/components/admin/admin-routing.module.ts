@@ -6,7 +6,7 @@ import { UserlistAdminComponent } from './userlist/userlist-admin.component';
 import { AllAppointmentsComponent } from './all-appointments/all-appointments.component';
 
 const routes: Routes = [
-  { path: '', component: AbmAdminComponent },
+  { path: 'auth-specialist', component: AbmAdminComponent },
   { path: 'register', component: RegisterAdminComponent },
   { path: 'userlist', component: UserlistAdminComponent },
   { path: 'appointments', component: AllAppointmentsComponent },

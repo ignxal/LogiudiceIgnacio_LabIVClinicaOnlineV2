@@ -16,6 +16,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
+import { HomeModule } from './components/home/home.module';
 
 @NgModule({
   declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe],
@@ -28,6 +29,7 @@ import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
     BrowserModule,
     AppRoutingModule,
     SharedModule,
+    HomeModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatListModule,

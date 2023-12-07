@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate, CanDeactivate<unknown> {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.auth.loggedUser === undefined;
+    return this.auth.loggedUser === undefined || this.auth.loggedUser === null;
   }
   canDeactivate(
     component: unknown,

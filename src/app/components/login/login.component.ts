@@ -89,7 +89,7 @@ export class LoginComponent {
             timer: 1500,
             didDestroy: () => {
               this.resetForm();
-              this.router.navigate(['']);
+              this.router.navigate(['/home']);
             },
           });
         } else {

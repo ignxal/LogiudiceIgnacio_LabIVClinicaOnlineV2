@@ -2,7 +2,7 @@
   <div
     class="container d-flex flex-column flex-md-row justify-content-between align-items-center"
   >
-    <a class="py-2" routerLink="">
+    <a class="py-2" routerLink="/home">
       <img
         src="../../../../favicon.ico"
         width="24"
@@ -16,27 +16,7 @@
         class="d-block mb-2"
       />
     </a>
-    <a
-      *ngIf="this.currentUser?.role === 'Patient'"
-      class="py-2 d-none d-md-inline-block p-2"
-      href="#"
-      style="color: #f1f1f1 !important; margin-left: 1em"
-      routerLink="patient/my-appointment"
-      routerLinkActive="text-white"
-    >
-      {{ "Mis turnos" }}
-    </a>
 
-    <a
-      *ngIf="this.currentUser?.role === 'Patient'"
-      class="py-2 d-none d-md-inline-block p-2"
-      href="#"
-      style="color: #f1f1f1 !important; margin-left: 1em"
-      routerLink="patient/request-appointment"
-      routerLinkActive="text-white"
-    >
-      {{ "Solicitar turno" }}
-    </a>
     <div class="container d-flex flex-column flex-md-row justify-content-end">
       <ng-container *ngIf="this.currentUser === undefined; else elseTemplate">
         <a

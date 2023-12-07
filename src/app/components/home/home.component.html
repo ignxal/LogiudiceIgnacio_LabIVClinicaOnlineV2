@@ -1,0 +1,58 @@
+<div class="container-page fadeInDown">
+  <div class="body" *ngIf="this.user.role == 'Admin'">
+    <div class="container">
+      <div class="card" routerLink="/admin/register">
+        <div class="card-content">
+          <div class="image register"></div>
+          <div class="text">Registrar Usuario</div>
+        </div>
+      </div>
+      <div class="card" routerLink="/admin/auth-specialist">
+        <div class="card-content">
+          <div class="image authspecialist"></div>
+          <div class="text">Autorizar Especialista</div>
+        </div>
+      </div>
+      <div class="card" routerLink="/admin/userlist">
+        <div class="card-content">
+          <div class="image list"></div>
+          <div class="text">Listado de Usuarios</div>
+        </div>
+      </div>
+      <div class="card" routerLink="/admin/appointments">
+        <div class="card-content">
+          <div class="image appointment"></div>
+          <div class="text">Historial de turnos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body" *ngIf="this.user.role == 'Patient'">
+    <div class="container">
+      <div class="card" routerLink="/patient/my-appointment">
+        <div class="card-content">
+          <div class="image list"></div>
+          <div class="text">Mis turnos</div>
+        </div>
+      </div>
+      <div class="card" routerLink="/patient/request-appointment">
+        <div class="card-content">
+          <div class="image appointment"></div>
+          <div class="text">Solicitar turno</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body" *ngIf="this.user.role == 'Specialist'">
+    <div class="container">
+      <div class="card" routerLink="/specialist/appointments">
+        <div class="card-content">
+          <div class="image list"></div>
+          <div class="text">Mis turnos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
