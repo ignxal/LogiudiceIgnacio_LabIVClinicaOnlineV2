@@ -58,6 +58,7 @@ export class UserlistAdminComponent implements OnInit {
   }
 
   downloadData() {
+    this.loaderService.show();
     var table_elt = document.getElementById('users-table');
     var workbook = XLSX.utils.table_to_book(table_elt);
     var ws = workbook.Sheets['Sheet1'];
@@ -65,9 +66,11 @@ export class UserlistAdminComponent implements OnInit {
       origin: -1,
     });
     XLSX.writeFile(workbook, 'lista-usuarios.xlsx');
+    this.loaderService.hide();
   }
 
   downloadAppointments(user: UserM) {
+    this.loaderService.show();
     if (user.role == 'Specialist') {
       this.appointmentsService.getAppointmentsBySpecialist(user.uid).subscribe({
         next: (res) => {
@@ -169,6 +172,7 @@ export class UserlistAdminComponent implements OnInit {
       });
       PDF.save('registro-atenciones' + '-' + name + '.pdf');
     }
+    this.loaderService.hide();
   }
 
   changeStyle() {

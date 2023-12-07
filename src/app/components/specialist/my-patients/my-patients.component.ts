@@ -127,6 +127,7 @@ export class MyPatientsComponent implements OnInit {
   }
 
   download() {
+    this.loaderService.show();
     var today = new Date();
     var line = 20;
     today.toLocaleDateString('es-ES');
@@ -209,6 +210,7 @@ export class MyPatientsComponent implements OnInit {
     PDF.save(
       'historia-clinica' + '-' + this.patientMedicalHistory.patient + '.pdf'
     );
+    this.loaderService.show();
   }
 
   hasSurveyData(survey: any): boolean {

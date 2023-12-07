@@ -22,12 +22,14 @@ td {
 
 .menu {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .column {
-  float: left;
-  width: 10%;
-  padding: 0 10px;
+  flex: 0 0 calc(16.666% - 20px);
+  max-width: calc(16.666% - 20px);
+  margin: 5px;
 }
 
 .row {
