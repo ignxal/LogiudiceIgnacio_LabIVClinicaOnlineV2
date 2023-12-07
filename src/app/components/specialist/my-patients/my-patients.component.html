@@ -1,0 +1,150 @@
+<div class="container">
+  <h1 style="margin-top: 0.5em">Mis Pacientes</h1>
+  <div class="p-2 mb-2" style="width: 100%">
+    <div *ngIf="patientsBySpecialist?.length > 0; else elseBlock">
+      <div class="row">
+        <div
+          class="col-2"
+          *ngFor="let patient of patientsBySpecialist; let i = index"
+        >
+          <button
+            type="button"
+            class="card btn btn-dark"
+            data-bs-toggle="modal"
+            data-bs-target="#medicalHistoryModal"
+            (click)="openMedicalHistory(patient.uid)"
+          >
+            <img
+              class="mx-auto"
+              src="{{
+                patient.photoURL
+                  ? patient.photoURL
+                  : '/assets/common/profile-user.png'
+              }}"
+              alt="{{ patient.name }}"
+              style="width: 50%"
+            />
+            <div class="card-body">
+              <h5 class="card-title">
+                Nombre: {{ patient.name + " " + patient.lastName }}
+              </h5>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <label class="btn btn-outline-danger">No hay pacientes que mostrar</label>
+    </ng-template>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="medicalHistoryModal"
+  tabindex="-1"
+  aria-labelledby="medicalHistoryModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div
+          *ngIf="
+            patientMedicalHistory != undefined;
+            else elseBlockMedicalHistory
+          "
+        >
+          <div class="d-flex justify-content-between align-items-center">
+            <h3>
+              Historia clinica del paciente
+              {{ patientMedicalHistory.patientName }}
+            </h3>
+            <a class="btn btn-dark" (click)="download()">Descargar</a>
+          </div>
+          <hr />
+          <div>
+            <h4>Informacion de la ultima cita</h4>
+            <ul>
+              <li>Altura: {{ patientMedicalHistory[0].height }} cm.</li>
+              <li>Peso: {{ patientMedicalHistory[0].weight }} kg.</li>
+              <li>Temperatura: {{ patientMedicalHistory[0].temp }}°C</li>
+              <li>Presion: {{ patientMedicalHistory[0].pressure }} (media)</li>
+            </ul>
+          </div>
+          <hr />
+          <p>Historial de atencion con el especialista {{ userData.name }}</p>
+          <div *ngFor="let appointment of patientAppointments; let i = index">
+            <hr />
+            <ul>
+              <li>Fecha: {{ appointment.appointmentDate }}</li>
+              <li>Especialista: {{ appointment.specialistName }}</li>
+              <li>Diagnostico: {{ appointment.diagnosis }}</li>
+              <li *ngIf="appointment.comments">
+                Comentario de {{ appointment.comments }}
+              </li>
+            </ul>
+
+            <button
+              type="button"
+              class="btn btn-dark"
+              *ngIf="hasSurveyData(appointment.survey)"
+              data-bs-toggle="modal"
+              data-bs-target="#surveyModal"
+              (click)="openSurvey(appointment.survey)"
+            >
+              Ver Reseña
+            </button>
+          </div>
+        </div>
+        <ng-template #elseBlockMedicalHistory>
+          <label class="btn btn-outline-danger"
+            >No hay historia clinica para mostrar</label
+          >
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="surveyModal"
+  tabindex="-1"
+  aria-labelledby="surveyModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3>Encuesta del paciente</h3>
+        </div>
+        <hr />
+        <ul>
+          <li>Claridad: {{ currentAppointment?.clarity }}</li>
+          <li>Feedback: {{ currentAppointment?.feedback }}</li>
+          <li>Rate: {{ currentAppointment?.rate }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        data-bs-dismiss="modal"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

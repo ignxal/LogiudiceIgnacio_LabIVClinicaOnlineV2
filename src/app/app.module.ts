@@ -18,9 +18,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
 import { HomeModule } from './components/home/home.module';
 import { RolePipe } from './pipes/role.pipe';
+import { SpecialtiesPipe } from './pipes/specialties.pipe';
+import { SurveyValuesPipe } from './pipes/survey-values.pipe';
 
 @NgModule({
-  declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe, RolePipe],
+  declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe, RolePipe, SpecialtiesPipe, SurveyValuesPipe],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth(getApp())),

@@ -8,6 +8,16 @@ strong {
   color: rgb(232, 230, 227);
 }
 
+table,
+thead,
+tbody,
+tr,
+th,
+td {
+  background-color: #3f4548 !important;
+  color: rgb(232, 230, 227);
+}
+
 .modal-body,
 .modal-content {
   background-color: #3f4548;
@@ -15,7 +25,8 @@ strong {
   font-size: 16px;
 }
 
-button {
+button,
+.btn {
   border-color: rgb(232, 230, 227);
   color: rgb(232, 230, 227);
   transition: ease 0.5s;

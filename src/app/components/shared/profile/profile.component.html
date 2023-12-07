@@ -266,7 +266,9 @@
               <li>Fecha: {{ appointment.appointmentDate }}</li>
               <li>Especialista: {{ appointment.specialistName }}</li>
               <li>Diagnostico: {{ appointment.diagnosis }}</li>
-              <li>Comentario de {{ appointment.comments }}</li>
+              <li *ngIf="appointment.comments">
+                Comentario de {{ appointment.comments }}
+              </li>
             </ul>
           </div>
         </div>
