@@ -75,6 +75,21 @@ export class AppointmentsService {
     );
   }
 
+  getAppointmentsBySpecialtyForSpecialist(
+    id_specialist: string,
+    specialty: string
+  ) {
+    let querys = [
+      where('id_specialist', '==', id_specialist),
+      where('specialty', '==', specialty),
+    ];
+
+    return this.collection.getAllWhereSnapshot<Appointment>(
+      this.collecionName,
+      and(...querys)
+    );
+  }
+
   getAppointmentsBySpecialistAndPatient(
     id_patient: string,
     id_specialist: string

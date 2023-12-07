@@ -36,10 +36,7 @@
   </div>
   <hr />
   <div *ngIf="this.appointments?.length > 0; else elseBlock">
-    <div
-      *ngIf="this.appointments as appointments; else elseBlock"
-      style="margin: 1em"
-    >
+    <div *ngIf="this.appointments as appointments; else elseBlock">
       <table class="table table-hover text-center">
         <thead>
           <tr>
@@ -93,9 +90,7 @@
 
             <td
               class="align-middle"
-              *ngIf="
-                appointment.status == 'Closed' && appointment.survey == null
-              "
+              *ngIf="appointment.status == 'Closed' && !appointment.survey"
             >
               <button
                 type="button"
@@ -110,9 +105,7 @@
 
             <td
               class="align-middle"
-              *ngIf="
-                appointment.status == 'Closed' && appointment.rating == '0'
-              "
+              *ngIf="appointment.status == 'Closed' && appointment.rate == 0"
             >
               <button
                 type="button"
@@ -317,9 +310,7 @@
           </div>
           <p>Comentarios:</p>
           <ul>
-            <li *ngFor="let info of appointmentComments | keyvalue">
-              {{ info.key }}: {{ info.value }}
-            </li>
+            <li>{{ appointmentComments }}</li>
           </ul>
         </div>
         <div class="modal-footer text-center">
@@ -475,12 +466,6 @@
               [value]="5"
               (click)="rate($event)"
             />
-
-            <label for="star1">1</label>
-            <label for="star2">2</label>
-            <label for="star3">3</label>
-            <label for="star4">4</label>
-            <label for="star5">5</label>
           </div>
         </div>
         <div class="modal-footer text-center">

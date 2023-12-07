@@ -288,12 +288,10 @@ export class MyAppointmentsComponent implements OnInit {
 
   openInfoAppointment(appointment: any) {
     console.log(appointment);
-    this.loaderService.show();
     this.appointmentDiagnostic = appointment.diagnosis;
     this.appointmentDate = appointment.appointmentDate;
     this.appointmentStatus = appointment.status;
     this.appointmentComments = appointment.comments;
-    this.loaderService.hide();
   }
 
   openSurvey(appointment: any) {
@@ -302,8 +300,8 @@ export class MyAppointmentsComponent implements OnInit {
 
   surveyAppointment() {
     if (
-      this.personalOpinion.value == '' ||
-      this.doctorClarity == '' ||
+      !this.personalOpinion.value ||
+      !this.doctorClarity ||
       this.appointmentRate == 0
     ) {
       Swal.fire({
@@ -328,16 +326,16 @@ export class MyAppointmentsComponent implements OnInit {
           title: 'Operación exitosa!',
           text: 'La encuesta fue registrada exitosamente',
         });
-        this.loaderService.hide();
-      })
-      .then(() => {
+
         if (this.specialtySelected) {
           this.getAppointmentsBySpecialty();
         }
         if (this.doctorSelected) {
           this.getAppointmentsBySpecialist();
         }
+        this.loaderService.hide();
       })
+
       .finally(() => {
         this.personalOpinion.setValue('');
         this.doctorClarity = '';

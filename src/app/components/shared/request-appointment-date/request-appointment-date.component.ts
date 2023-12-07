@@ -206,6 +206,7 @@ export class RequestAppointmentDateComponent implements OnInit {
       id: '',
       specialty: this.specialty,
       id_patient: this.patient,
+      patientName: this.patientName,
       id_specialist: this.currentSpecialist.uid,
       specialistName: this.specialistName,
       diagnosis: '',

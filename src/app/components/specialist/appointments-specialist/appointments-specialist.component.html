@@ -1,0 +1,551 @@
+<div class="main-container">
+  <div class="d-flex justify-content-center" style="margin: 0 1em">
+    <button
+      type="button"
+      class="btn btn-dark"
+      data-bs-toggle="modal"
+      data-bs-target="#specialtyModal"
+    >
+      Filtrar por especialidad
+    </button>
+    <button
+      type="button"
+      class="btn btn-dark"
+      data-bs-toggle="modal"
+      data-bs-target="#specialistModal"
+    >
+      Filtrar por paciente
+    </button>
+  </div>
+  <div class="d-flex justify-content-center" style="margin: 0 1em">
+    <input
+      class="form-control rounded-25 py-2"
+      type="search"
+      placeholder="Buscar..."
+      [(ngModel)]="searchValue"
+      style="width: 95%; color: white"
+    />
+    <button
+      type="button"
+      class="btn btn-dark"
+      style="width: 5%"
+      (click)="search()"
+    >
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+  <hr />
+  <div *ngIf="appointments?.length > 0; else elseBlock">
+    <div
+      *ngIf="this.appointments as appointments; else elseBlock"
+      style="margin: 1em"
+    >
+      <table class="table table-hover text-center">
+        <thead>
+          <tr>
+            <th scope="col">Nombre paciente</th>
+            <th scope="col">Especialidad</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let appointment of appointments; let i = index">
+            <td class="align-middle">{{ appointment.patientName }}</td>
+            <td class="align-middle">{{ appointment.specialty }}</td>
+            <td class="align-middle">{{ appointment.appointmentDate }}</td>
+            <td class="align-middle">
+              <label class="btn info">{{ appointment.status }}</label>
+            </td>
+            <td class="align-middle" *ngIf="appointment.status == 'Pending'">
+              <button
+                type="button"
+                class="btn grennS"
+                (click)="acceptAppointment(appointment)"
+              >
+                Aceptar
+              </button>
+            </td>
+
+            <td class="align-middle" *ngIf="appointment.status == 'Accepted'">
+              <button
+                type="button"
+                class="btn grennS"
+                data-bs-toggle="modal"
+                data-bs-target="#closeAppointmentModal"
+                (click)="openCloseAppointment(appointment, 'Closed')"
+              >
+                Finalizar
+              </button>
+            </td>
+
+            <td class="align-middle" *ngIf="appointment.status == 'Pending'">
+              <button
+                type="button"
+                class="btn btn-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+                (click)="openCancelOrRejectAppointment(appointment, 'Canceled')"
+              >
+                Cancelar
+              </button>
+            </td>
+
+            <td class="align-middle" *ngIf="appointment.status == 'Pending'">
+              <button
+                type="button"
+                class="btn redC"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+                (click)="openCancelOrRejectAppointment(appointment, 'Rejected')"
+              >
+                Rechazar
+              </button>
+            </td>
+
+            <td
+              class="align-middle"
+              *ngIf="
+                appointment.status == 'Canceled' ||
+                appointment.status == 'Rejected' ||
+                appointment.status == 'Closed'
+              "
+            >
+              <button
+                type="button"
+                class="btn yellowC"
+                data-bs-toggle="modal"
+                data-bs-target="#infoModal"
+                (click)="openInfoAppointment(appointment)"
+              >
+                Ver
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #elseBlock>
+    <label class="filtrados"><h2>No hay turnos filtrados</h2></label>
+  </ng-template>
+
+  <div
+    class="modal fade"
+    id="specialtyModal"
+    tabindex="-1"
+    aria-labelledby="specialtyModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Especialidades</h1>
+          <div *ngIf="specialtiesList?.length > 0; else elseBlockSpecialties">
+            <div *ngFor="let specialty of specialtiesList; let i = index">
+              <input
+                type="radio"
+                name="specialty"
+                class="btn-check"
+                id="{{ specialty }}"
+                autocomplete="off"
+                [value]="specialty"
+                (click)="selectSpecialty($event)"
+                data-bs-dismiss="modal"
+              />
+
+              <label class="btn btn-dark" for="{{ specialty }}">
+                <div class="d-flex align-items-center justify-content-between">
+                  {{ specialty }}
+                </div>
+              </label>
+            </div>
+          </div>
+          <ng-template #elseBlockSpecialties>
+            <label class="filtrados"
+              ><h2>No hay turnos de esa especialidad para mostrar</h2></label
+            >
+          </ng-template>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="specialistModal"
+    tabindex="-1"
+    aria-labelledby="specialistModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Pacientes</h1>
+          <div
+            *ngIf="patientsFromSpecialist?.length > 0; else elseBlockPatients"
+          >
+            <div *ngFor="let patient of patientsFromSpecialist; let i = index">
+              <input
+                type="radio"
+                name="patient"
+                class="btn-check"
+                id="{{ patient.name }}"
+                autocomplete="off"
+                [value]="patient.uid"
+                (click)="selectPatient($event)"
+                data-bs-dismiss="modal"
+              />
+
+              <label class="btn btn-dark" for="{{ patient.name }}">
+                <div class="d-flex align-items-center justify-content-between">
+                  {{ patient.name + " " + patient.lastName }}
+                  <img
+                    class="img-fluid"
+                    src="{{
+                      patient.photoURL
+                        ? patient.photoURL
+                        : '/assets/common/profile-user.png'
+                    }}"
+                    alt="{{ patient.name }}"
+                    style="width: 15%"
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+          <ng-template #elseBlockPatients>
+            <label class="filtrados"
+              ><h2>No hay turnos de ese paciente para mostrar</h2></label
+            >
+          </ng-template>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="cancelModal"
+    tabindex="-1"
+    aria-labelledby="cancelModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Cancelacion</h1>
+          <div class="form-group col-md-12">
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Ingrese motivo de la cancelacion/rechazo"
+                [formControl]="cancelReason"
+              />
+            </div>
+            <div class="input-group-append">
+              <button
+                class="btn btn-dark"
+                type="button"
+                (click)="cancelOrRejectAppointment()"
+                data-bs-dismiss="modal"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="infoModal"
+    tabindex="-1"
+    aria-labelledby="infoModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body text-left">
+          <h1>Detalle del turno</h1>
+          <p>Estado: {{ appointmentStatus }}</p>
+          <p>Fecha: {{ appointmentDate }}</p>
+          <div *ngIf="appointmentDiagnostic != ''">
+            <p>Diagnostico: {{ appointmentDiagnostic }}</p>
+          </div>
+          <p>Comentarios:</p>
+          <ul>
+            <li>{{ appointmentComments }}</li>
+          </ul>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="closeAppointmentModal"
+    tabindex="-1"
+    aria-labelledby="closeAppointmentModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1 class="text-center">Diagnostico</h1>
+          <div class="form-group col-md-12">
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <label for="diagnostic">Altura</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Ingrese altura en cm."
+                  [formControl]="height"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="diagnostic">Peso</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Ingrese peso"
+                  [formControl]="weight"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <label for="diagnostic">Temperatura</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Ingrese temperatura"
+                  [formControl]="temp"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="diagnostic">Presion</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Ingrese presion arterial"
+                  [formControl]="pressure"
+                />
+              </div>
+            </div>
+            <br />
+            <label for="diagnostic">Informacion adicional</label>
+            <br />
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Campo 1"
+                  [formControl]="field1Key"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Valor 1"
+                  [formControl]="field1Value"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Campo 2"
+                  [formControl]="field2Key"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Valor 2"
+                  [formControl]="field2Value"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Campo 3"
+                  [formControl]="field3Key"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Valor 3"
+                  [formControl]="field3Value"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Campo 4"
+                  [formControl]="field4Key"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <input
+                  type="range"
+                  #time
+                  (input)="(time.value)"
+                  id="time"
+                  min="0"
+                  max="10"
+                  step="0.5"
+                  style="width: 100%"
+                  (click)="setField4Value($event)"
+                />
+                <label for="time" class="text-center">({{ time.value }})</label>
+              </div>
+            </div>
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Campo 5"
+                  [formControl]="field5Key"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Valor 5"
+                  [formControl]="field5Value"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Campo 6"
+                  [formControl]="field6Key"
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="flexSwitchCheckDefault"
+                    (change)="setField6Value($event)"
+                  />
+                </div>
+              </div>
+            </div>
+            <hr />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ingrese comentario"
+              [formControl]="comment"
+            />
+            <br />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ingrese diagnostico"
+              [formControl]="diagnostic"
+            />
+          </div>
+          <br />
+          <div class="modal-footer text-center">
+            <div class="row align-items-center">
+              <div class="form-group col-md-6">
+                <button
+                  class="btn btn-dark"
+                  type="button"
+                  data-bs-dismiss="modal"
+                  (click)="closeAppointment()"
+                >
+                  Confirmar
+                </button>
+              </div>
+              <div class="form-group col-md-6">
+                <button
+                  type="button"
+                  class="btn btn-outline-dark"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -40,9 +40,9 @@ export class LoginComponent {
     },
     {
       role: 'Specialist',
-      email: 'deslelelapata@specialist.com',
-      fullName: 'Deslele Lapata',
-      password: 'qwerty',
+      email: 'juanitoperez@waterisgone.com',
+      fullName: 'Juan Perez',
+      password: '123456',
     },
     {
       role: 'Specialist',

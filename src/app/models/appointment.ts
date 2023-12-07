@@ -5,6 +5,7 @@ export class Appointment implements Collection {
     public id: string,
     public specialty?: string | undefined,
     public id_patient?: string | undefined,
+    public patientName?: string | undefined,
     public id_specialist?: string | undefined,
     public specialistName?: string | undefined,
     public diagnosis: string = '',
