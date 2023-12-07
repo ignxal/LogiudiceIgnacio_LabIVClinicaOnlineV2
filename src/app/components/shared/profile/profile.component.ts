@@ -145,11 +145,6 @@ export class ProfileComponent implements OnInit {
         next: (res) => {
           console.log(res);
           if (res.length < 1) {
-            Swal.fire({
-              icon: 'error',
-              title: 'No se encontro historial médico!',
-              text: 'Obtenga el suyo atentiendose con los profesionales',
-            });
             return;
           }
 

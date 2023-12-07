@@ -28,14 +28,14 @@ export class LoginComponent {
     },
     {
       role: 'Patient',
-      email: 'lelelapata@patient.com',
-      fullName: 'Lele Lapata',
+      email: 'duelelelapata@patient.com',
+      fullName: 'Duele Lapata',
       password: '123456',
     },
     {
       role: 'Patient',
-      email: 'lelelapie@patient.com',
-      fullName: 'Lele Lapie',
+      email: 'marcoantonio@patient.com',
+      fullName: 'Marco Antonio',
       password: '123456',
     },
     {
