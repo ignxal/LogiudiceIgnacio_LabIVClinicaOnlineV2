@@ -30,8 +30,9 @@ export class RequestAppointmentSpecialtyComponent implements OnInit {
       next: (users: any) => {
         this.specialtiesList = users
           .map((user: any) => user.specialty)
+          .flat()
           .filter(
-            (specialty: any, index: any, self: any) =>
+            (specialty: any, index: number, self: any[]) =>
               self.indexOf(specialty) === index
           );
 

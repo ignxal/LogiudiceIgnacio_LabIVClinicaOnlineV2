@@ -34,8 +34,8 @@ export class RequestAppointmentDoctorComponent implements OnInit {
     this.loaderService.show();
     this.userService.getAllApprovedSpecialists().subscribe({
       next: (x: UserM[]) => {
-        this.specialists = x.filter(
-          (specialist) => specialist.specialty === this.specialty
+        this.specialists = x.filter((specialist) =>
+          specialist.specialty.includes(this.specialty)
         );
 
         this.loaderService.hide();

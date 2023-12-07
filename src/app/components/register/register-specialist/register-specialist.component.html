@@ -70,11 +70,15 @@
         <div class="mb-3 col-6">
           <label for="specialty" class="form-label">Especialidad:</label>
           <div class="d-flex">
-            <select class="input-group form-select" formControlName="specialty">
-              <option *ngFor="let x of specialties" [value]="x">
-                {{ x }}
-              </option>
-            </select>
+            <mat-select
+              multiple
+              formControlName="specialty"
+              class="input-group form-select"
+            >
+              <mat-option *ngFor="let x of specialties" [value]="x">{{
+                x
+              }}</mat-option>
+            </mat-select>
             <button
               mat-flat-button
               color="accent"
@@ -87,8 +91,9 @@
           <small
             class="text-danger"
             *ngIf="specialty?.errors && specialty?.touched"
-            >Por favor, ingrese una especialidad.</small
           >
+            Por favor, ingrese una especialidad.
+          </small>
         </div>
 
         <div class="mb-3 col-6">

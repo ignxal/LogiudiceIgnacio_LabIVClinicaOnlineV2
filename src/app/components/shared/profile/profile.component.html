@@ -33,9 +33,9 @@
         </div>
         <div *ngIf="user.role == 'Specialist'">
           <p>Especialidades:</p>
-          <div>
+          <div *ngFor="let specialty of user.specialty">
             <ul>
-              <li>{{ user.specialty }}</li>
+              <li>{{ specialty }}</li>
             </ul>
           </div>
           <hr />

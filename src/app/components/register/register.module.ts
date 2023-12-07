@@ -9,6 +9,7 @@ import { RegisterPatientComponent } from './register-patient/register-patient.co
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from '../shared/shared.module';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressSpinnerModule,
     SharedModule,
     MatIconModule,
+    MatSelectModule,
   ],
 })
 export class RegisterModule {}
