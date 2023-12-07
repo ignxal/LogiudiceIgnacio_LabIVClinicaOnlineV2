@@ -1,493 +1,505 @@
-<h1>MIS TURNOS</h1>
-<br />
-<div class="d-flex justify-content-center">
-  <button
-    type="button"
-    class="btn btn-dark"
-    data-bs-toggle="modal"
-    data-bs-target="#specialtyModal"
-  >
-    Filtrar por especialidad
-  </button>
-  <button
-    type="button"
-    class="btn btn-dark"
-    data-bs-toggle="modal"
-    data-bs-target="#specialistModal"
-  >
-    Filtrar por especialista
-  </button>
-</div>
-<div class="d-flex justify-content-center">
-  <input
-    class="form-control rounded-25 py-2"
-    type="search"
-    placeholder="Buscar..."
-    [(ngModel)]="searchValue"
-    style="width: 90%"
-  />
-  <button
-    type="button"
-    class="btn btn-dark"
-    style="width: 10%"
-    (click)="search()"
-  >
-    <i class="bi bi-search"></i>
-  </button>
-</div>
-<hr />
-<div *ngIf="this.appointments?.length > 0; else elseBlock">
-  <div *ngIf="this.appointments as appointments; else elseBlock">
-    <table class="table table-hover text-center">
-      <thead>
-        <tr>
-          <th scope="col">Especialista</th>
-          <th scope="col">Especialidad</th>
-          <th scope="col">Fecha</th>
-          <th scope="col">Estado</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
+<div class="main-container">
+  <div class="d-flex justify-content-center" style="margin: 0 1em">
+    <button
+      type="button"
+      class="btn btn-dark"
+      data-bs-toggle="modal"
+      data-bs-target="#specialtyModal"
+    >
+      Filtrar por especialidad
+    </button>
+    <button
+      type="button"
+      class="btn btn-dark"
+      data-bs-toggle="modal"
+      data-bs-target="#specialistModal"
+    >
+      Filtrar por especialista
+    </button>
+  </div>
+  <div class="d-flex justify-content-center" style="margin: 0 1em">
+    <input
+      class="form-control rounded-25 py-2"
+      type="search"
+      placeholder="Buscar..."
+      [(ngModel)]="searchValue"
+      style="width: 95%; color: white"
+    />
+    <button
+      type="button"
+      class="btn btn-dark"
+      style="width: 5%; color: white"
+      (click)="search()"
+    >
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+  <hr />
+  <div *ngIf="this.appointments?.length > 0; else elseBlock">
+    <div
+      *ngIf="this.appointments as appointments; else elseBlock"
+      style="margin: 1em"
+    >
+      <table class="table table-hover text-center">
+        <thead>
+          <tr>
+            <th scope="col">Especialista</th>
+            <th scope="col">Especialidad</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Estado</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr *ngFor="let appointment of this.appointments; let i = index">
-          <td class="align-middle">{{ appointment.specialistName }}</td>
-          <td class="align-middle">{{ appointment.specialty }}</td>
-          <td class="align-middle">{{ appointment.appointmentDate }}</td>
-          <td class="align-middle">
-            <label class="btn info">{{ appointment.status }}</label>
-          </td>
-          <td class="align-middle" *ngIf="appointment.status == 'Pending'">
-            <button
-              type="button"
-              class="btn redC"
-              data-bs-toggle="modal"
-              data-bs-target="#cancelModal"
-              (click)="openCancelOrRejectAppointment(appointment, 'Canceled')"
+        <tbody>
+          <tr *ngFor="let appointment of this.appointments; let i = index">
+            <td class="align-middle">{{ appointment.specialistName }}</td>
+            <td class="align-middle">{{ appointment.specialty }}</td>
+            <td class="align-middle">{{ appointment.appointmentDate }}</td>
+            <td class="align-middle">
+              <label class="btn info">{{ appointment.status }}</label>
+            </td>
+            <td class="align-middle" *ngIf="appointment.status == 'Pending'">
+              <button
+                type="button"
+                class="btn redC"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+                (click)="openCancelOrRejectAppointment(appointment, 'Canceled')"
+              >
+                Cancelar
+              </button>
+            </td>
+
+            <td
+              class="align-middle"
+              *ngIf="
+                appointment.status == 'Canceled' ||
+                appointment.status == 'Rejected' ||
+                appointment.status == 'Closed'
+              "
             >
-              Cancelar
-            </button>
-          </td>
+              <button
+                type="button"
+                class="btn yellowC"
+                data-bs-toggle="modal"
+                data-bs-target="#infoModal"
+                (click)="openInfoAppointment(appointment)"
+              >
+                Ver
+              </button>
+            </td>
 
-          <td
-            class="align-middle"
+            <td
+              class="align-middle"
+              *ngIf="
+                appointment.status == 'Closed' && appointment.survey == null
+              "
+            >
+              <button
+                type="button"
+                class="btn greenS"
+                data-bs-toggle="modal"
+                data-bs-target="#surveyModal"
+                (click)="openSurvey(appointment)"
+              >
+                Encuesta
+              </button>
+            </td>
+
+            <td
+              class="align-middle"
+              *ngIf="
+                appointment.status == 'Closed' && appointment.rating == '0'
+              "
+            >
+              <button
+                type="button"
+                class="btn greenS"
+                data-bs-toggle="modal"
+                data-bs-target="#rateModal"
+                (click)="openRateAppointment(appointment)"
+              >
+                Calificar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #elseBlock>
+    <label class="filtrados"><h2>No hay turnos filtrados</h2></label>
+  </ng-template>
+
+  <div
+    class="modal fade"
+    id="specialtyModal"
+    tabindex="-1"
+    aria-labelledby="specialtyModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Especialidades</h1>
+          <div
             *ngIf="
-              appointment.status == 'Canceled' ||
-              appointment.status == 'Rejected' ||
-              appointment.status == 'Closed'
+              this.specialtiesByPatient?.length > 0;
+              else elseBlockSpecialty
             "
           >
-            <button
-              type="button"
-              class="btn yellowC"
-              data-bs-toggle="modal"
-              data-bs-target="#infoModal"
-              (click)="openInfoAppointment(appointment)"
+            <div
+              *ngFor="let specialty of this.specialtiesByPatient; let i = index"
             >
-              Ver
-            </button>
-          </td>
-
-          <td
-            class="align-middle"
-            *ngIf="appointment.status == 'Closed' && appointment.survey == null"
+              <input
+                type="radio"
+                name="specialty"
+                class="btn-check"
+                id="{{ specialty }}"
+                autocomplete="off"
+                [value]="specialty"
+                (click)="selectSpecialty($event)"
+                data-bs-dismiss="modal"
+              />
+              <label class="btn btn-dark" for="{{ specialty }}">
+                <div
+                  type="text"
+                  class="d-flex align-items-center justify-content-between"
+                >
+                  {{ specialty }}
+                </div>
+              </label>
+            </div>
+          </div>
+          <ng-template #elseBlockSpecialty>
+            <label class="filtrados"
+              ><h2>No hay turnos de esa especialidad para mostrar</h2></label
+            >
+          </ng-template>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
           >
-            <button
-              type="button"
-              class="btn greenS"
-              data-bs-toggle="modal"
-              data-bs-target="#surveyModal"
-              (click)="openSurvey(appointment)"
-            >
-              Encuesta
-            </button>
-          </td>
-
-          <td
-            class="align-middle"
-            *ngIf="appointment.status == 'Closed' && appointment.rating == '0'"
-          >
-            <button
-              type="button"
-              class="btn greenS"
-              data-bs-toggle="modal"
-              data-bs-target="#rateModal"
-              (click)="openRateAppointment(appointment)"
-            >
-              Calificar
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<ng-template #elseBlock>
-  <label class="filtrados"><h2>No hay turnos filtrados</h2></label>
-</ng-template>
 
-<div
-  class="modal fade"
-  id="specialtyModal"
-  tabindex="-1"
-  aria-labelledby="specialtyModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h1>Especialidades</h1>
-        <div
-          *ngIf="this.specialtiesByPatient?.length > 0; else elseBlockSpecialty"
-        >
-          <div
-            *ngFor="let specialty of this.specialtiesByPatient; let i = index"
-          >
-            <input
-              type="radio"
-              name="specialty"
-              class="btn-check"
-              id="{{ specialty }}"
-              autocomplete="off"
-              [value]="specialty"
-              (click)="selectSpecialty($event)"
-              data-bs-dismiss="modal"
-            />
-            <label class="btn btn-dark" for="{{ specialty }}">
-              <div
-                type="text"
-                class="d-flex align-items-center justify-content-between"
+  <div
+    class="modal fade"
+    id="specialistModal"
+    tabindex="-1"
+    aria-labelledby="specialistModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Eespecialistas</h1>
+          <div *ngIf="doctorsByPatient?.length > 0; else elseBlockSpecialist">
+            <div *ngFor="let doctor of doctorsByPatient; let i = index">
+              <input
+                type="radio"
+                name="doctor"
+                class="btn-check"
+                id="{{ doctor.name }}"
+                autocomplete="off"
+                [value]="doctor.uid"
+                (click)="selectDoctor($event)"
+                data-bs-dismiss="modal"
+              />
+
+              <label class="btn btn-dark" for="{{ doctor.name }}">
+                <div class="d-flex align-items-center justify-content-between">
+                  {{ doctor.name + " " + doctor.lastName }}
+                  <img
+                    class="img-fluid"
+                    src="{{
+                      doctor.photoURL
+                        ? doctor.photoURL
+                        : '/assets/common/profile-user.png'
+                    }}"
+                    alt="{{ doctor.name }}"
+                    style="width: 15%"
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+          <ng-template #elseBlockSpecialist>
+            <div class="container">
+              <label class="filtrados"
+                ><h2>No hay turnos de ese especialista para mostrar</h2></label
               >
-                {{ specialty }}
-              </div>
-            </label>
-          </div>
+            </div>
+          </ng-template>
         </div>
-        <ng-template #elseBlockSpecialty>
-          <label class="filtrados"
-            ><h2>No hay turnos de esa especialidad para mostrar</h2></label
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
           >
-        </ng-template>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline-dark"
-          data-bs-dismiss="modal"
-        >
-          Cancelar
-        </button>
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div
-  class="modal fade"
-  id="specialistModal"
-  tabindex="-1"
-  aria-labelledby="specialistModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h1>Eespecialistas</h1>
-        <div *ngIf="doctorsByPatient?.length > 0; else elseBlockSpecialist">
-          <div *ngFor="let doctor of doctorsByPatient; let i = index">
+  <div
+    class="modal fade"
+    id="cancelModal"
+    tabindex="-1"
+    aria-labelledby="cancelModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Motivo</h1>
+          <div class="form-group col-md-12">
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Ingrese motivo de la cancelacion"
+                [formControl]="cancelReason"
+              />
+            </div>
+            <div class="input-group-append">
+              <button
+                class="btn btn-dark"
+                type="button"
+                (click)="cancelAppointment()"
+                data-bs-dismiss="modal"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="infoModal"
+    tabindex="-1"
+    aria-labelledby="cancelModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body text-left">
+          <h1>Detalle del turno</h1>
+          <p>Estado: {{ appointmentStatus }}</p>
+          <p>Fecha: {{ appointmentDate }}</p>
+          <div *ngIf="appointmentDiagnostic != ''">
+            <p>Diagnostico: {{ appointmentDiagnostic }}</p>
+          </div>
+          <p>Comentarios:</p>
+          <ul>
+            <li *ngFor="let info of appointmentComments | keyvalue">
+              {{ info.key }}: {{ info.value }}
+            </li>
+          </ul>
+        </div>
+        <div class="modal-footer text-center">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="surveyModal"
+    tabindex="-1"
+    aria-labelledby="surveyModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body text-left">
+          <h1>Encuesta</h1>
+          <input
+            type="textarea"
+            class="form-control"
+            placeholder="Ingrese una opinion personal"
+            [formControl]="personalOpinion"
+          />
+          <br />
+          <div>
+            <p>Claridad del profesional:</p>
             <input
               type="radio"
-              name="doctor"
-              class="btn-check"
-              id="{{ doctor.displayName }}"
-              autocomplete="off"
-              [value]="doctor.displayName"
-              (click)="selectDoctor($event)"
-              data-bs-dismiss="modal"
+              id="excelent"
+              name="rating"
+              value="excelent"
+              (click)="clarity($event)"
             />
-
-            <label class="btn btn-dark" for="{{ doctor.displayName }}">
-              <div class="d-flex align-items-center justify-content-between">
-                {{ doctor.displayName }}
-                <img
-                  class="img-fluid"
-                  src="{{
-                    doctor.photoURL
-                      ? doctor.photoURL
-                      : '/assets/common/profile-user.png'
-                  }}"
-                  alt="{{ doctor.displayName }}"
-                  style="width: 15%"
-                />
-              </div>
-            </label>
-          </div>
-        </div>
-        <ng-template #elseBlockSpecialist>
-          <label class="filtrados"
-            ><h2>No hay turnos de ese especialista para mostrar</h2></label
-          >
-        </ng-template>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline-dark"
-          data-bs-dismiss="modal"
-        >
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="cancelModal"
-  tabindex="-1"
-  aria-labelledby="cancelModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h1>Motivo</h1>
-        <div class="form-group col-md-12">
-          <div class="input-group mb-3">
+            <label for="excelent">Excelente</label>
+            <br />
             <input
-              type="text"
-              class="form-control"
-              placeholder="Ingrese motivo de la cancelacion"
-              [formControl]="cancelReason"
+              type="radio"
+              id="good"
+              name="rating"
+              value="good"
+              (click)="clarity($event)"
             />
+            <label for="good">Buena</label>
+            <br />
+            <input
+              type="radio"
+              id="regular"
+              name="rating"
+              value="regular"
+              (click)="clarity($event)"
+            />
+            <label for="regular">Regular</label>
+            <br />
+            <input
+              type="radio"
+              id="bad"
+              name="rating"
+              value="bad"
+              (click)="clarity($event)"
+            />
+            <label for="bad">Mala</label>
+            <br />
           </div>
-          <div class="input-group-append">
-            <button
-              class="btn btn-dark"
-              type="button"
-              (click)="cancelAppointment()"
-              data-bs-dismiss="modal"
-            >
-              Confirmar
-            </button>
+          <br />
+          <label for="customRange1" class="form-label"
+            >Conformidad con el diagnostico</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+            min="0"
+            max="10"
+            step="0.5"
+            (click)="rate($event)"
+          />
+        </div>
+        <div class="modal-footer text-center">
+          <button
+            class="btn btn-dark"
+            type="button"
+            (click)="surveyAppointment()"
+            data-bs-dismiss="modal"
+          >
+            Confirmar
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="rateModal"
+    tabindex="-1"
+    aria-labelledby="rateModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1>Calificacion del profesional</h1>
+
+          <div class="stars d-flex justify-content-center">
+            <input
+              type="radio"
+              id="star1"
+              name="rating"
+              [value]="1"
+              (click)="rate($event)"
+            />
+            <input
+              type="radio"
+              id="star2"
+              name="rating"
+              [value]="2"
+              (click)="rate($event)"
+            />
+            <input
+              type="radio"
+              id="star3"
+              name="rating"
+              [value]="3"
+              (click)="rate($event)"
+            />
+            <input
+              type="radio"
+              id="star4"
+              name="rating"
+              [value]="4"
+              (click)="rate($event)"
+            />
+            <input
+              type="radio"
+              id="star5"
+              name="rating"
+              [value]="5"
+              (click)="rate($event)"
+            />
+
+            <label for="star1">1</label>
+            <label for="star2">2</label>
+            <label for="star3">3</label>
+            <label for="star4">4</label>
+            <label for="star5">5</label>
           </div>
         </div>
-      </div>
-      <div class="modal-footer text-center">
-        <button
-          type="button"
-          class="btn btn-outline-dark"
-          data-bs-dismiss="modal"
-        >
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="infoModal"
-  tabindex="-1"
-  aria-labelledby="cancelModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body text-left">
-        <h1>Detalle del turno</h1>
-        <p>Estado: {{ appointmentStatus }}</p>
-        <p>Fecha: {{ appointmentDate }}</p>
-        <div *ngIf="appointmentDiagnostic != ''">
-          <p>Diagnostico: {{ appointmentDiagnostic }}</p>
+        <div class="modal-footer text-center">
+          <button
+            class="btn btn-dark"
+            type="button"
+            (click)="rateAppointment()"
+            data-bs-dismiss="modal"
+          >
+            Calificar
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
         </div>
-        <p>Comentarios:</p>
-        <ul>
-          <li *ngFor="let info of appointmentComments | keyvalue">
-            {{ info.key }}: {{ info.value }}
-          </li>
-        </ul>
-      </div>
-      <div class="modal-footer text-center">
-        <button
-          type="button"
-          class="btn btn-outline-dark"
-          data-bs-dismiss="modal"
-        >
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="surveyModal"
-  tabindex="-1"
-  aria-labelledby="surveyModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body text-left">
-        <h1>Encuesta</h1>
-        <input
-          type="textarea"
-          class="form-control"
-          placeholder="Ingrese una opinion personal"
-          [formControl]="personalOpinion"
-        />
-        <br />
-        <div>
-          <p>Claridad del profesional:</p>
-          <input
-            type="radio"
-            id="excelent"
-            name="rating"
-            value="excelent"
-            (click)="clarity($event)"
-          />
-          <label for="excelent">Excelente</label>
-          <br />
-          <input
-            type="radio"
-            id="good"
-            name="rating"
-            value="good"
-            (click)="clarity($event)"
-          />
-          <label for="good">Buena</label>
-          <br />
-          <input
-            type="radio"
-            id="regular"
-            name="rating"
-            value="regular"
-            (click)="clarity($event)"
-          />
-          <label for="regular">Regular</label>
-          <br />
-          <input
-            type="radio"
-            id="bad"
-            name="rating"
-            value="bad"
-            (click)="clarity($event)"
-          />
-          <label for="bad">Mala</label>
-          <br />
-        </div>
-        <br />
-        <label for="customRange1" class="form-label"
-          >Conformidad con el diagnostico</label
-        >
-        <input
-          type="range"
-          class="form-range"
-          id="customRange1"
-          min="0"
-          max="10"
-          step="0.5"
-          (click)="rate($event)"
-        />
-      </div>
-      <div class="modal-footer text-center">
-        <button
-          class="btn btn-dark"
-          type="button"
-          (click)="surveyAppointment()"
-          data-bs-dismiss="modal"
-        >
-          Confirmar
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-dark"
-          data-bs-dismiss="modal"
-        >
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="rateModal"
-  tabindex="-1"
-  aria-labelledby="rateModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h1>Calificacion del profesional</h1>
-
-        <div class="stars d-flex justify-content-center">
-          <input
-            type="radio"
-            id="star1"
-            name="rating"
-            [value]="1"
-            (click)="rate($event)"
-          />
-          <input
-            type="radio"
-            id="star2"
-            name="rating"
-            [value]="2"
-            (click)="rate($event)"
-          />
-          <input
-            type="radio"
-            id="star3"
-            name="rating"
-            [value]="3"
-            (click)="rate($event)"
-          />
-          <input
-            type="radio"
-            id="star4"
-            name="rating"
-            [value]="4"
-            (click)="rate($event)"
-          />
-          <input
-            type="radio"
-            id="star5"
-            name="rating"
-            [value]="5"
-            (click)="rate($event)"
-          />
-
-          <label for="star1">1</label>
-          <label for="star2">2</label>
-          <label for="star3">3</label>
-          <label for="star4">4</label>
-          <label for="star5">5</label>
-        </div>
-      </div>
-      <div class="modal-footer text-center">
-        <button
-          class="btn btn-dark"
-          type="button"
-          (click)="rateAppointment()"
-          data-bs-dismiss="modal"
-        >
-          Calificar
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-dark"
-          data-bs-dismiss="modal"
-        >
-          Cerrar
-        </button>
       </div>
     </div>
   </div>

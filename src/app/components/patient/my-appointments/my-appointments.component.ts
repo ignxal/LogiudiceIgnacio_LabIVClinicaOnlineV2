@@ -81,6 +81,7 @@ export class MyAppointmentsComponent implements OnInit {
           .subscribe({
             next: (res) => {
               this.allAppointments = res;
+              this.appointments = res;
               this.loaderService.hide();
             },
             error: (err) => {
