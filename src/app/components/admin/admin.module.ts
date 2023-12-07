@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbmAdminComponent } from './abm/abm-admin.component';
 import { UserlistAdminComponent } from './userlist/userlist-admin.component';
 import { AllAppointmentsComponent } from './all-appointments/all-appointments.component';
+import { AdminRequestAppointmentComponent } from './admin-request-appointment/admin-request-appointment.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { AllAppointmentsComponent } from './all-appointments/all-appointments.co
     AbmAdminComponent,
     UserlistAdminComponent,
     AllAppointmentsComponent,
+    AdminRequestAppointmentComponent,
   ],
   imports: [
     CommonModule,

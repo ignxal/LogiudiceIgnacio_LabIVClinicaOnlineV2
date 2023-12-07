@@ -39,10 +39,15 @@ export class RequestAppointmentDateComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!changes['doctor']) {
+    if (!changes['doctor'] && !changes['patient']) {
       this.appointments = [];
       return;
     }
+
+    if (changes['patient']) {
+      this.patient = changes['patient'].currentValue;
+    }
+
     this.user = this.auth.loggedUser;
     this.doctor = changes['doctor'].currentValue;
 
@@ -68,14 +73,18 @@ export class RequestAppointmentDateComponent implements OnInit {
 
             if (specialistAppointments) {
               this.appointments = this.appointments.filter((y) => {
-                return !specialistAppointments.includes(y);
+                return !datesSpecialist.includes(y);
               });
             }
 
             this.appointmentService
-              .getPatientAvailability(this.user.uid)
+              .getPatientAvailability(this.patient)
               .subscribe({
                 next: (resPat: any) => {
+                  if (resPat.length > 0) {
+                    this.patientName = resPat[0]?.patientName;
+                  }
+
                   const datesPatient = resPat.map((x: any) => {
                     return x.appointmentDate;
                   });
