@@ -17,9 +17,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { AppointmentStatusPipe } from './pipes/appointment-status.pipe';
 import { HomeModule } from './components/home/home.module';
+import { RolePipe } from './pipes/role.pipe';
 
 @NgModule({
-  declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe],
+  declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe, RolePipe],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth(getApp())),

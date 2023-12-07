@@ -5,7 +5,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { AppointmentStatusPipe } from 'src/app/pipes/appointment-status.pipe';
 import { AppointmentStatus, Appointment } from 'src/app/models/appointment';
 import { LoaderService } from 'src/app/services/loader.service';
 import { AuthService } from 'src/app/services/auth.service';

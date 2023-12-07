@@ -1,5 +1,5 @@
-.container-fluid {
-  margin-top: 100px;
+* {
+  box-sizing: border-box;
 }
 
 h1 {
@@ -14,4 +14,35 @@ th,
 td {
   background-color: rgb(45, 49, 51) !important;
   color: rgb(232, 230, 227);
+}
+
+.container-fluid {
+  margin-top: 100px;
+}
+
+.menu {
+  display: flex;
+}
+
+.column {
+  float: left;
+  width: 10%;
+  padding: 0 10px;
+}
+
+.row {
+  margin: 0 -5px;
+}
+
+.card {
+  color: rgb(232, 230, 227);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background-color: #212529;
+  max-width: 300px;
+  max-height: 300px;
+  height: 300px;
+  width: 10rem;
+  cursor: pointer;
 }

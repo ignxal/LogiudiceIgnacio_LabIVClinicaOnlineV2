@@ -12,8 +12,17 @@
           >
         </div>
         <hr />
+        <button class="btn btn-dark" (click)="changeStyle()">
+          Cambiar de estilo
+        </button>
+        <br />
+        <br />
         <div *ngIf="this.usersData as users">
-          <table class="table table-hover text-center" id="users-table">
+          <table
+            class="table table-hover text-center"
+            id="users-table"
+            *ngIf="!isCard"
+          >
             <thead>
               <tr>
                 <th scope="col">DNI</th>
@@ -36,6 +45,19 @@
               </tr>
             </tbody>
           </table>
+          <div class="menu" *ngIf="isCard">
+            <div class="row" *ngFor="let user of users">
+              <div class="column" (click)="downloadAppointments(user)">
+                <div class="card" appButtonEffect>
+                  <img class="card-img-top" src="{{ user.photoURL }}" alt="" />
+                  <div class="card-body">
+                    <h5 class="card-title">{{ user.name }}</h5>
+                    <p class="card-text">{{ user.role }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
