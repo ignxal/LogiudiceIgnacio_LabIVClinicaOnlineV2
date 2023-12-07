@@ -317,7 +317,10 @@ export class AppointmentsSpecialistComponent {
 
     const obj = Object.fromEntries(observations);
     const record: MedicalRecord = {
-      id_patient: this.userData.uid,
+      id_patient: this.currentAppointment.id_patient,
+      patientName: this.currentAppointment.patientName,
+      id_specialist: this.userData.uid,
+      specialty: this.currentAppointment.specialty,
       date: this.currentAppointment.appointmentDate,
       height: this.height.value || '',
       weight: this.weight.value || '',

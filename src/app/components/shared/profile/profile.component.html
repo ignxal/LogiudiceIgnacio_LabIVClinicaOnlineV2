@@ -193,24 +193,19 @@
               let i = index
             "
           >
-            <input
-              type="checkbox"
+            <button
+              type="button"
               name="specialty"
-              class="btn-check"
+              class="btn btn-outline-dark"
               id="{{ specialtyMedicalHistory }}"
               autocomplete="off"
               [value]="specialtyMedicalHistory"
               (click)="createMedicalHistoryBySpecialty(specialtyMedicalHistory)"
               data-bs-toggle="modal"
               data-bs-target="#medicalHistoryDetailModal"
-            />
-
-            <label
-              class="btn btn-outline-dark"
-              for="{{ specialtyMedicalHistory }}"
             >
               {{ specialtyMedicalHistory }}
-            </label>
+            </button>
           </div>
         </div>
         <ng-template #elseBlock>
@@ -239,14 +234,12 @@
     <div class="modal-content">
       <div class="modal-body">
         <div
-          *ngIf="
-            patientMedicalHistory != undefined;
-            else elseBlockMedicalHistory
-          "
+          *ngIf="patientMedicalHistory.length > 0; else elseBlockMedicalHistory"
         >
           <div class="d-flex justify-content-between align-items-center">
             <h3>
-              Historia clinica del paciente {{ patientMedicalHistory.patient }}
+              Historia clinica del paciente
+              {{ patientMedicalHistory[0].patientName }}
             </h3>
           </div>
           <a class="btn btn-dark" (click)="download()">Descargar</a>
@@ -254,10 +247,10 @@
           <div>
             <h4>Informacion de la ultima cita</h4>
             <ul>
-              <li>Altura: {{ patientMedicalHistory.height }} cm..</li>
-              <li>Peso: {{ patientMedicalHistory.weight }} kg.</li>
-              <li>Temperatura: {{ patientMedicalHistory.temp }}°C</li>
-              <li>Presion: {{ patientMedicalHistory.pressure }} (media)</li>
+              <li>Altura: {{ patientMedicalHistory[0].height }} cm.</li>
+              <li>Peso: {{ patientMedicalHistory[0].weight }} kg.</li>
+              <li>Temperatura: {{ patientMedicalHistory[0].temp }}°C</li>
+              <li>Presion: {{ patientMedicalHistory[0].pressure }} (media)</li>
             </ul>
           </div>
           <hr />
@@ -270,16 +263,10 @@
           >
             <hr />
             <ul>
-              <li>Fecha: {{ appointment.date }}</li>
-              <li>Especialista: {{ appointment.doctor }}</li>
+              <li>Fecha: {{ appointment.appointmentDate }}</li>
+              <li>Especialista: {{ appointment.specialistName }}</li>
               <li>Diagnostico: {{ appointment.diagnosis }}</li>
-              <li>Observaciones:</li>
-              <ul>
-                <li *ngFor="let info of appointment.observations | keyvalue">
-                  {{ info.key }}: {{ info.value }}
-                </li>
-              </ul>
-              <li>Comentario de {{ appointment.appointmentInfo }}</li>
+              <li>Comentario de {{ appointment.comments }}</li>
             </ul>
           </div>
         </div>

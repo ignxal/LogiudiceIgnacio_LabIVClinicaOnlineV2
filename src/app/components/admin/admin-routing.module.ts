@@ -7,8 +7,16 @@ import { AllAppointmentsComponent } from './all-appointments/all-appointments.co
 import { AdminRequestAppointmentComponent } from './admin-request-appointment/admin-request-appointment.component';
 
 const routes: Routes = [
-  { path: 'auth-specialist', component: AbmAdminComponent },
-  { path: 'register', component: RegisterAdminComponent },
+  {
+    path: 'auth-specialist',
+    component: AbmAdminComponent,
+    data: { state: 'auth-specialist' },
+  },
+  {
+    path: 'register',
+    component: RegisterAdminComponent,
+    data: { state: 'register' },
+  },
   { path: 'userlist', component: UserlistAdminComponent },
   { path: 'appointments', component: AllAppointmentsComponent },
   { path: 'request-appointments', component: AdminRequestAppointmentComponent },

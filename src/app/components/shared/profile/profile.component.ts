@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
   day: string | undefined;
   days: any[] = [];
   specialty: any;
-  patientMedicalHistory: any;
+  patientMedicalHistory: any[] = [];
 
   daysData: Array<any> = [
     { name: 'Lunes', value: 'Lunes' },
@@ -175,12 +175,12 @@ export class ProfileComponent implements OnInit {
 
   createMedicalHistoryBySpecialty(specialty: any) {
     this.specialty = specialty;
-
+    this.patientMedicalHistory = [];
     this.appointmentService
       .getMedicalHistoryBySpecialtyAndPatient(
         specialty,
         this.userData.uid,
-        'closed'
+        'Closed'
       )
       .subscribe({
         next: (res) => {
@@ -189,7 +189,18 @@ export class ProfileComponent implements OnInit {
             .getMedicalHistoryByPatient(this.userData.uid)
             .subscribe({
               next: (mh) => {
-                this.patientMedicalHistory = mh;
+                mh.forEach((x) => {
+                  this.patientAppointmentsBySpecialty.forEach((y: any) => {
+                    if (x.specialty === y.specialty) {
+                      this.patientMedicalHistory.push(x);
+                    }
+                  });
+                });
+
+                this.patientMedicalHistory = this.removeDuplicates(
+                  this.patientMedicalHistory
+                );
+
                 this.loaderService.hide();
               },
               error: (err: any) => {
@@ -214,38 +225,60 @@ export class ProfileComponent implements OnInit {
   }
 
   download() {
-    var today = new Date();
-    var line = 20;
+    const today = new Date();
+    const PDF = new jsPDF('p', 'mm', 'a4');
+    const pageHeight = PDF.internal.pageSize.height - 10;
+    let line = 20;
     today.toLocaleDateString('es-ES');
-    let PDF = new jsPDF('p', 'mm', 'a4');
-    let pageHeight = PDF.internal.pageSize.height - 10;
 
-    PDF.addImage('../../../assets/common/logo.png', 'PNG', 150, 10, 50, 50);
+    PDF.addImage(
+      'https://firebasestorage.googleapis.com/v0/b/clinica-online-v2.appspot.com/o/pageIcon.png?alt=media&token=11489f28-b897-47b6-9c41-cdc60d0a63da',
+      'PNG',
+      150,
+      10,
+      50,
+      50
+    );
     PDF.text(
       `Fecha de creacion: ${today.toLocaleDateString('es-ES')}`,
       10,
       line
     );
+
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
     PDF.text(
-      `Historia clínica de ${this.patientMedicalHistory.patient}`,
+      `Historia clínica de ${this.patientMedicalHistory[0].patientName}`,
       10,
       line
     );
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
     PDF.text(`-Datos ultimo control:`, 10, line);
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-    PDF.text(`* Altura: ${this.patientMedicalHistory.height} cm`, 15, line);
+    PDF.text(`* Altura: ${this.patientMedicalHistory[0].height} cm`, 15, line);
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-    PDF.text(`* Peso: ${this.patientMedicalHistory.weight} kgs`, 15, line);
-    line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-    PDF.text(`* Temperatura: ${this.patientMedicalHistory.temp} ºC`, 15, line);
+    PDF.text(`* Peso: ${this.patientMedicalHistory[0].weight} kgs`, 15, line);
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
     PDF.text(
-      `* Presión: ${this.patientMedicalHistory.pressure} (media)`,
+      `* Temperatura: ${this.patientMedicalHistory[0].temp} ºC`,
       15,
       line
     );
+    line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+    PDF.text(
+      `* Presión: ${this.patientMedicalHistory[0].pressure} (media)`,
+      15,
+      line
+    );
+    line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+
+    for (const key in this.patientMedicalHistory[0].observations) {
+      PDF.text(
+        `* ${key}: ${this.patientMedicalHistory[0].observations[key]}`,
+        20,
+        line
+      );
+      line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+    }
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
     PDF.text(
       `- Historial de atencion de la especialidad: ${this.specialty}`,
@@ -253,26 +286,23 @@ export class ProfileComponent implements OnInit {
       line
     );
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-    this.patientAppointmentsBySpecialty.forEach((element: any) => {
+    this.patientAppointmentsBySpecialty.forEach((x: any) => {
       PDF.text(
         `----------------------------------------------------------------------`,
         15,
         line
       );
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-      PDF.text(`* Fecha: ${element.date}`, 15, line);
+      PDF.text(`* Fecha: ${x.appointmentDate}`, 15, line);
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-      PDF.text(`* Especialista: ${element.doctor}`, 15, line);
+      PDF.text(`* Especialista: ${x.specialistName}`, 15, line);
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-      PDF.text(`* Diagnostico: ${element.diagnosis}`, 15, line);
+      PDF.text(`* Diagnostico: ${x.diagnosis}`, 15, line);
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
       PDF.text(`* Observaciones:`, 15, line);
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-      for (var key in element.observations) {
-        PDF.text(`* ${key}: ${element.observations[key]}`, 20, line);
-        line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-      }
-      PDF.text(`* Comentario de ${element.appointmentInfo}`, 15, line, {
+
+      PDF.text(`* Comentario de ${x.comments}`, 15, line, {
         maxWidth: 180,
       });
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
@@ -281,7 +311,7 @@ export class ProfileComponent implements OnInit {
     PDF.save(
       'historia-clínica' +
         '-' +
-        this.patientMedicalHistory.patient +
+        this.patientMedicalHistory[0].patientName +
         '-' +
         this.specialty +
         '.pdf'

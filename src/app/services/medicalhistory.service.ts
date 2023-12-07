@@ -24,7 +24,8 @@ export class MedicalHistoryService {
 
     return this.collection.getAllWhereSnapshot<any>(
       this.collectionName,
-      and(...querys)
+      and(...querys),
+      'date'
     );
   }
 

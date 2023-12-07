@@ -8,9 +8,10 @@ const routes: Routes = [
   { path: '', component: WelcomeComponent },
   {
     path: 'login',
+    canActivate: [AuthGuard],
+    data: { state: 'login' },
     loadChildren: () =>
       import('./components/login/login.module').then((m) => m.LoginModule),
-    canActivate: [AuthGuard],
   },
   {
     path: 'admin',
