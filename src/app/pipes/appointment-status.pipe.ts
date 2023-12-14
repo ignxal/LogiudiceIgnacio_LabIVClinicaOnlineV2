@@ -5,28 +5,26 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class AppointmentStatusPipe implements PipeTransform {
   transform(value: any): unknown {
-    var status = value;
-
-    if (status == 'Pending') {
-      status = 'Pendiente';
+    if (value == 'Pending') {
+      return 'Pendiente';
     }
 
-    if (status == 'Canceled') {
-      status = 'Cancelado';
+    if (value == 'Canceled') {
+      return 'Cancelado';
     }
 
-    if (status == 'Rejected') {
-      status = 'Rechazado';
+    if (value == 'Rejected') {
+      return 'Rechazado';
     }
 
-    if (status == 'Accepted') {
-      status = 'Aceptado';
+    if (value == 'Accepted') {
+      return 'Aceptado';
     }
 
-    if (status == 'Closed') {
-      status = 'Finalizado';
+    if (value == 'Closed') {
+      return 'Finalizado';
     }
 
-    return status;
+    return value;
   }
 }

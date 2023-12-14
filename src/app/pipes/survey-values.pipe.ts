@@ -9,17 +9,11 @@ export class SurveyValuesPipe implements PipeTransform {
 
     if (returnValue == 'bad') {
       returnValue = 'Mala';
-    }
-
-    if (returnValue == 'regular') {
+    } else if (returnValue == 'regular') {
       returnValue = 'Regular';
-    }
-
-    if (returnValue == 'good') {
+    } else if (returnValue == 'good') {
       returnValue = 'Buena';
-    }
-
-    if (returnValue == 'excellent') {
+    } else if (returnValue == 'excellent') {
       returnValue = 'Excelente';
     }
 

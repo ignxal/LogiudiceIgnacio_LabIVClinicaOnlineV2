@@ -5,38 +5,38 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SpecialtiesPipe implements PipeTransform {
   transform(value: any): unknown {
-    let specialty = value.toLowerCase();
+    const specialty = value.toLowerCase();
 
     if (specialty == 'cardiology') {
-      specialty = 'Cardiologia';
+      return 'Cardiologia';
     }
 
     if (specialty == 'dentist') {
-      specialty = 'Odontologia';
+      return 'Odontologia';
     }
 
     if (specialty == 'gastroenterology') {
-      specialty = 'Gastroenterologia';
+      return 'Gastroenterologia';
     }
 
     if (specialty == 'neurology') {
-      specialty = 'Neurologia';
+      return 'Neurologia';
     }
 
     if (specialty == 'oftalmology') {
-      specialty = 'Oftalmologia';
+      return 'Oftalmologia';
     }
 
     if (specialty == 'radiology') {
-      specialty = 'Radiologia';
+      return 'Radiologia';
     }
 
     if (specialty == 'urology') {
-      specialty = 'Urologia';
+      return 'Urologia';
     }
 
     if (specialty == 'traumatology') {
-      specialty = 'Traumatologia';
+      return 'Traumatologia';
     }
 
     return specialty;
