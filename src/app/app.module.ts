@@ -23,6 +23,7 @@ import { SurveyValuesPipe } from './pipes/survey-values.pipe';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { RandomNumberPipe } from './pipes/random-number.pipe';
 import { CapitalizeFirstLetterPipe } from './pipes/capitalize-first-letter.pipe';
+import { HoverDirective } from 'src/app/directives/hover.directive';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { CapitalizeFirstLetterPipe } from './pipes/capitalize-first-letter.pipe'
     SurveyValuesPipe,
     RandomNumberPipe,
     CapitalizeFirstLetterPipe,
+    HoverDirective,
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
