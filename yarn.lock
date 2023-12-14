@@ -5002,6 +5002,18 @@ hdr-histogram-percentiles-obj@^3.0.0:
   resolved "https://registry.yarnpkg.com/hdr-histogram-percentiles-obj/-/hdr-histogram-percentiles-obj-3.0.0.tgz#9409f4de0c2dda78e61de2d9d78b1e9f3cba283c"
   integrity sha512-7kIufnBqdsBGcSZLPJwqHT3yhk1QTsSlFsVD3kx5ixH/AlgBs9yM1q6DPhXZ8f8gtdqgh7N7/5btRLpQsS2gHw==
 
+highcharts-angular@3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/highcharts-angular/-/highcharts-angular-3.1.2.tgz#632c1fac1bde42266cb8ac4ef716207c6ae791ca"
+  integrity sha512-f168ZhRVVlV7vJ2g0gDH3IaTNv84c91z6GYRWuER0Ep5kLalAUH0KDtFhrTOb6+sjue7BK8M7aPY74fiC4bGXA==
+  dependencies:
+    tslib "^2.0.0"
+
+highcharts@11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-11.2.0.tgz#32ddc885b1c7a7d438df30c6d751c28991b16616"
+  integrity sha512-9i650YK7ZBA1Mgtr3avMkLVCAI45RQvYnwi+eHsdFSaBGuQN6BHoa4j4lMkSJLv0V4LISTK1z7J7G82Lzd7zwg==
+
 hosted-git-info@^6.0.0:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-6.1.1.tgz#629442c7889a69c05de604d52996b74fe6f26d58"
@@ -6124,6 +6136,13 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+ngx-router-animations@13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-router-animations/-/ngx-router-animations-13.0.0.tgz#33f1654d0762208646fd05feca27d094e0f68f91"
+  integrity sha512-jSlyiOiZnPJRJbIMvcPU6P+TqhIDbf27ldbh60VZa3O2PYodI0QOSbqzK+rzyk0Y95cjYGqNwSbehT78pUiBjA==
+  dependencies:
+    tslib "^2.0.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"

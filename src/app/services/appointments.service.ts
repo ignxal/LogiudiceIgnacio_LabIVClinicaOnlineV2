@@ -12,7 +12,19 @@ export class AppointmentsService {
   constructor(private collection: CollectionsService) {}
 
   getAppointments() {
-    return this.collection.getAllSnapshot<Appointment>(this.collecionName, '');
+    return this.collection.getAllSnapshot<Appointment>(
+      this.collecionName,
+      'appointmentDate'
+    );
+  }
+
+  getFinishedAppointments() {
+    const querys = [where('status', '==', AppointmentStatus.Closed)];
+
+    return this.collection.getAllWhereSnapshot<Appointment>(
+      this.collecionName,
+      and(...querys)
+    );
   }
 
   getAppointmentsBydate(date: Date) {

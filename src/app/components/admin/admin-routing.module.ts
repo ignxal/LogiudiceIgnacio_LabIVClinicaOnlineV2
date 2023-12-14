@@ -5,6 +5,7 @@ import { RegisterAdminComponent } from './register/register-admin.component';
 import { UserlistAdminComponent } from './userlist/userlist-admin.component';
 import { AllAppointmentsComponent } from './all-appointments/all-appointments.component';
 import { AdminRequestAppointmentComponent } from './admin-request-appointment/admin-request-appointment.component';
+import { AppStatsComponent } from './app-stats/app-stats.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'userlist', component: UserlistAdminComponent },
   { path: 'appointments', component: AllAppointmentsComponent },
   { path: 'request-appointments', component: AdminRequestAppointmentComponent },
+  { path: 'stats', component: AppStatsComponent },
 ];
 
 @NgModule({

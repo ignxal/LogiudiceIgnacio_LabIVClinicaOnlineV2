@@ -8,6 +8,9 @@ import { AbmAdminComponent } from './abm/abm-admin.component';
 import { UserlistAdminComponent } from './userlist/userlist-admin.component';
 import { AllAppointmentsComponent } from './all-appointments/all-appointments.component';
 import { AdminRequestAppointmentComponent } from './admin-request-appointment/admin-request-appointment.component';
+import { AppStatsComponent } from './app-stats/app-stats.component';
+import { AppointmentsEndedComponent } from './app-stats/appointments-ended/appointments-ended.component';
+import { AppointmentsSpecialtyComponent } from './app-stats/appointments-specialty/appointments-specialty.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +19,9 @@ import { AdminRequestAppointmentComponent } from './admin-request-appointment/ad
     UserlistAdminComponent,
     AllAppointmentsComponent,
     AdminRequestAppointmentComponent,
+    AppointmentsEndedComponent,
+    AppStatsComponent,
+    AppointmentsSpecialtyComponent,
   ],
   imports: [
     CommonModule,

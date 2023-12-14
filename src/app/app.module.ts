@@ -20,9 +20,17 @@ import { HomeModule } from './components/home/home.module';
 import { RolePipe } from './pipes/role.pipe';
 import { SpecialtiesPipe } from './pipes/specialties.pipe';
 import { SurveyValuesPipe } from './pipes/survey-values.pipe';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @NgModule({
-  declarations: [AppComponent, WelcomeComponent, AppointmentStatusPipe, RolePipe, SpecialtiesPipe, SurveyValuesPipe],
+  declarations: [
+    AppComponent,
+    WelcomeComponent,
+    AppointmentStatusPipe,
+    RolePipe,
+    SpecialtiesPipe,
+    SurveyValuesPipe,
+  ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth(getApp())),
@@ -38,6 +46,7 @@ import { SurveyValuesPipe } from './pipes/survey-values.pipe';
     MatListModule,
     MatGridListModule,
     MatButtonModule,
+    HighchartsChartModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],
