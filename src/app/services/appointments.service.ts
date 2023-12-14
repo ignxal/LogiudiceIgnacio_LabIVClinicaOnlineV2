@@ -138,6 +138,22 @@ export class AppointmentsService {
     );
   }
 
+  getAppointmentsClosedBySpecialistAndPatient(
+    id_patient: string,
+    id_specialist: string
+  ) {
+    let querys = [
+      where('id_patient', '==', id_patient),
+      where('id_specialist', '==', id_specialist),
+      where('status', '==', AppointmentStatus.Closed),
+    ];
+
+    return this.collection.getAllWhereSnapshot<Appointment>(
+      this.collecionName,
+      and(...querys)
+    );
+  }
+
   getMedicalHistoryBySpecialtyAndPatient(
     specialty: any,
     id_patient: any,

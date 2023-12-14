@@ -15,6 +15,7 @@ import { RequestAppointmentSpecialtyComponent } from './request-appointment-spec
 import { RequestAppointmentDoctorComponent } from './request-appointment-specialist/request-appointment-specialist.component';
 import { RequestAppointmentDateComponent } from './request-appointment-date/request-appointment-date.component';
 import { RequestAppointmentPatientComponent } from './request-appointment-patient/request-appointment-patient.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,13 @@ import { RequestAppointmentPatientComponent } from './request-appointment-patien
     RequestAppointmentDateComponent,
     RequestAppointmentPatientComponent,
   ],
-  imports: [CommonModule, RouterModule, MatProgressBarModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatProgressBarModule,
+    FormsModule,
+    MatSelectModule,
+  ],
   exports: [
     ProfileComponent,
     FooterComponent,

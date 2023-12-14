@@ -7,7 +7,7 @@ import { AppointmentsService } from 'src/app/services/appointments.service';
 import { jsPDF } from 'jspdf';
 import Swal from 'sweetalert2';
 import { UserM } from 'src/app/models/user';
-import { Appointment } from 'src/app/models/appointment';
+import { Appointment, AppointmentStatus } from 'src/app/models/appointment';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +25,8 @@ export class ProfileComponent implements OnInit {
   specialty: any;
   patientMedicalHistory: any[] = [];
   myAppointments!: Appointment[];
+  patientSpecialists!: any[];
+  selectedSpecialistId!: number;
 
   daysData: Array<any> = [
     { name: 'Lunes', value: 'Lunes' },
@@ -61,13 +63,61 @@ export class ProfileComponent implements OnInit {
               },
               error: (err: any) => {
                 console.error(err);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Operación erronea!',
+                  text: 'Se produjo un error al obtener datos',
+                });
               },
             });
+        } else if (user.role == 'Patient') {
+          this.appointmentService.getAppointmentsByPatient(user.uid).subscribe({
+            next: (res: Appointment[]) => {
+              const closedAppointments = res.filter(
+                (appointment) => appointment.status === AppointmentStatus.Closed
+              );
+
+              this.patientSpecialists = closedAppointments.reduce(
+                (acc, appointment: Appointment) => {
+                  const existingSpecialist = acc.find(
+                    (item) => Object.keys(item)[0] === appointment.id_specialist
+                  );
+
+                  if (!existingSpecialist) {
+                    acc.push({
+                      [appointment.id_specialist]: appointment.specialistName,
+                    });
+                  }
+
+                  return acc;
+                },
+                []
+              );
+              this.myAppointments = closedAppointments;
+            },
+
+            error: (err: any) => {
+              console.error(err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Operación erronea!',
+                text: 'Se produjo un error al obtener datos',
+              });
+            },
+          });
         }
       })
       .finally(() => {
         this.loaderService.hide();
       });
+  }
+
+  getKey(obj: any): any {
+    return obj ? Object.keys(obj)[0] : null;
+  }
+
+  getValue(obj: any): any {
+    return obj ? obj[Object.keys(obj)[0]] : null;
   }
 
   removeDuplicates(arr: any) {
@@ -234,21 +284,43 @@ export class ProfileComponent implements OnInit {
         },
       });
   }
+  downloadAppointmentsPatientBySpecialist() {
+    this.loaderService.show();
 
-  downloadAppointmentsHistory() {
+    this.appointmentService
+      .getAppointmentsClosedBySpecialistAndPatient(
+        this.userData.uid,
+        this.selectedSpecialistId.toString()
+      )
+      .subscribe({
+        next: (res: Appointment[]) => {
+          this.generateHistoryPDF(
+            res,
+            `Historial de citas realizadas del especialista ${res[0].specialistName}`,
+            'registro-atenciones' +
+              '-' +
+              this.userData.name +
+              '-' +
+              res[0].specialistName +
+              '.pdf'
+          );
+          this.loaderService.hide();
+        },
+      });
+  }
+
+  generateHistoryPDF(
+    appointments: Appointment[],
+    pdftitle: string,
+    pdfname: string
+  ) {
     const today = new Date();
     let line = 20;
     today.toLocaleDateString('es-ES');
     const PDF = new jsPDF('p', 'mm', 'a4');
     let pageHeight = PDF.internal.pageSize.height - 10;
 
-    PDF.text(
-      `Historial de citas realizadas del especialista ${
-        this.userData.name + ' ' + this.userData.lastName
-      }`,
-      10,
-      10
-    );
+    PDF.text(pdftitle, 10, 10);
     PDF.addImage(
       'https://firebasestorage.googleapis.com/v0/b/clinica-online-v2.appspot.com/o/pageIcon.png?alt=media&token=11489f28-b897-47b6-9c41-cdc60d0a63da',
       'PNG',
@@ -263,7 +335,7 @@ export class ProfileComponent implements OnInit {
       line
     );
     line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
-    this.myAppointments.forEach((x: Appointment) => {
+    appointments.forEach((x: Appointment) => {
       PDF.text(
         `-----------------------------------------------------`,
         15,
@@ -277,10 +349,23 @@ export class ProfileComponent implements OnInit {
       PDF.text(`* Paciente: ${x.patientName}`, 15, line);
       line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
     });
-    PDF.save('registro-atenciones' + '-' + this.userData.name + '.pdf');
+    PDF.save(pdfname);
+  }
+
+  downloadAppointmentsHistory() {
+    this.loaderService.show();
+    this.generateHistoryPDF(
+      this.myAppointments,
+      `Historial de citas realizadas del especialista ${
+        this.userData.name + ' ' + this.userData.lastName
+      }`,
+      'registro-atenciones' + '-' + this.userData.name + '.pdf'
+    );
+    this.loaderService.hide();
   }
 
   download() {
+    this.loaderService.show();
     const today = new Date();
     const PDF = new jsPDF('p', 'mm', 'a4');
     const pageHeight = PDF.internal.pageSize.height - 10;
@@ -372,5 +457,6 @@ export class ProfileComponent implements OnInit {
         this.specialty +
         '.pdf'
     );
+    this.loaderService.hide();
   }
 }

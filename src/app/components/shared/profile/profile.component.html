@@ -21,15 +21,47 @@
             Obra Social: <strong>{{ user.healthInsurance }}</strong>
           </p>
           <hr />
-          <button
-            type="button"
-            class="btn btn-dark"
-            data-bs-toggle="modal"
-            data-bs-target="#medicalHistoryModal"
-            (click)="loadMedicalHistory()"
-          >
-            Ver mi historia clinica
-          </button>
+
+          <div class="container">
+            <div class="col">
+              <div class="col">
+                <mat-select
+                  [(ngModel)]="selectedSpecialistId"
+                  placeholder="Seleccione un especialista"
+                >
+                  <mat-option
+                    *ngFor="let specialist of patientSpecialists"
+                    [value]="getKey(specialist)"
+                  >
+                    {{ getValue(specialist) }}
+                  </mat-option>
+                </mat-select>
+              </div>
+              <div class="col">
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  (click)="downloadAppointmentsPatientBySpecialist()"
+                  [disabled]="!selectedSpecialistId"
+                >
+                  Descargar atenciones
+                </button>
+              </div>
+
+              <hr />
+              <div class="col">
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  data-bs-toggle="modal"
+                  data-bs-target="#medicalHistoryModal"
+                  (click)="loadMedicalHistory()"
+                >
+                  Ver mi historia clinica
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <div *ngIf="user.role == 'Specialist'">
           <p>Especialidades:</p>
