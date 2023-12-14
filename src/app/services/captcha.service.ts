@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CollectionsService } from './collections.service';
 import { and, where } from '@angular/fire/firestore';
+import { RandomNumberPipe } from '../pipes/random-number.pipe';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class CaptchaService {
   constructor(private collection: CollectionsService) {}
 
   getOne() {
-    const randomNumber = Math.floor(Math.random() * 3) + 1;
+    const randomNumber = new RandomNumberPipe().transform();
 
     let querys = [where('id', '==', `captcha-${randomNumber}`)];
 
