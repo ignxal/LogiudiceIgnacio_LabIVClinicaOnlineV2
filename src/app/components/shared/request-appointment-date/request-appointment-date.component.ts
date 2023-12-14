@@ -120,6 +120,9 @@ export class RequestAppointmentDateComponent implements OnInit {
   }
 
   generateDaysData(availabilityList: string[]) {
+    if (!availabilityList || availabilityList.length < 1) {
+      return;
+    }
     availabilityList.forEach((availability) => {
       const [day, startHour, endHour] = availability.split('-');
       this.generateDays(day, startHour, endHour);
