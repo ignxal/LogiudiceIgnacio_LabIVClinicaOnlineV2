@@ -16,19 +16,22 @@ import Swal from 'sweetalert2';
 import { UserM } from '../models/user';
 import { UserService } from './user.service';
 import { FilesService } from './file.service';
+import { CollectionsService } from './collections.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  collecionLogs = 'logs';
   loggedUser!: UserM | undefined;
   onUserLogged: EventEmitter<UserM> = new EventEmitter<UserM>();
   onUserLogout: EventEmitter<void> = new EventEmitter<void>();
   private userCredential!: User;
 
   constructor(
-    private usuariosService: UserService,
+    private userService: UserService,
     private fileService: FilesService,
+    private collectionService: CollectionsService,
     private auth: Auth,
     private router: Router
   ) {
@@ -44,7 +47,7 @@ export class AuthService {
       usuario.registerDate = Timestamp.now();
       if (usuario.role === 'Admin') usuario.emailVerified = true;
 
-      const exists = await this.usuariosService.exists(usuario);
+      const exists = await this.userService.exists(usuario);
 
       if (exists) {
         return { result: false, error: 'La persona ya existe' };
@@ -72,7 +75,7 @@ export class AuthService {
       usuario.photoURL = picturesURL[0];
       usuario.imageUrl = [...picturesURL];
 
-      await this.usuariosService.addOne(usuario);
+      await this.userService.addOne(usuario);
 
       return { result: true, error: '' };
     } catch (error: any) {
@@ -98,11 +101,11 @@ export class AuthService {
     console.log(this.auth);
     await applyActionCode(this.auth, oobCode);
 
-    this.usuariosService.getOne(this.auth.currentUser!.uid).then((user) => {
+    this.userService.getOne(this.auth.currentUser!.uid).then((user) => {
       user.emailVerified = true;
       user.confirmationDate = Timestamp.now();
 
-      this.usuariosService.update(user);
+      this.userService.update(user);
 
       Swal.fire({
         icon: 'success',
@@ -126,28 +129,27 @@ export class AuthService {
         email,
         password
       );
-      return this.usuariosService
-        .getOne(userCredential.user.uid)
-        .then((user) => {
-          if (user.emailVerified) {
-            if (
-              user.role !== 'Specialist' ||
-              (user.role === 'Specialist' && user.approved)
-            ) {
-              this.loggedUser = user;
-              this.setUserToStorage();
+      return this.userService.getOne(userCredential.user.uid).then((user) => {
+        if (user.emailVerified) {
+          if (
+            user.role !== 'Specialist' ||
+            (user.role === 'Specialist' && user.approved)
+          ) {
+            this.loggedUser = user;
+            this.setUserToStorage();
+            this.logUser(user);
 
-              return { result: true, error: '' };
-            } else {
-              return { result: false, error: 'El usuario no esta habilitado' };
-            }
+            return { result: true, error: '' };
           } else {
-            return {
-              result: false,
-              error: 'Primero debe confirmar su correo electrónico',
-            };
+            return { result: false, error: 'El usuario no esta habilitado' };
           }
-        });
+        } else {
+          return {
+            result: false,
+            error: 'Primero debe confirmar su correo electrónico',
+          };
+        }
+      });
     } catch (error: any) {
       switch (error.code) {
         case 'auth/user-not-found':
@@ -190,6 +192,35 @@ export class AuthService {
     } else {
       this.onUserLogged.emit(this.loggedUser);
     }
+  }
+
+  async logUser(user: UserM) {
+    var auxDate = new Date().toLocaleString();
+    var date = auxDate.split(',')[0];
+    var time = auxDate.split(',')[1];
+    let newLog: any = {
+      uid: user.uid,
+      displayName: user.name + ' ' + user.lastName,
+      date: date,
+      time: time,
+    };
+
+    return this.collectionService
+      .addOne(this.collecionLogs, newLog)
+      .then(() => {
+        return true;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        return false;
+      });
+  }
+
+  getLogs() {
+    return this.collectionService.getAllSnapshot<any>(
+      this.collecionLogs,
+      'date'
+    );
   }
 
   setUserToStorage() {

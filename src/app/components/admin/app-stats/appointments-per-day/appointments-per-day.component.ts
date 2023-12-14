@@ -4,6 +4,9 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { AppointmentsService } from 'src/app/services/appointments.service';
 import * as Highcharts from 'highcharts';
+import { LoaderService } from 'src/app/services/loader.service';
+import Swal from 'sweetalert2';
+import { Appointment } from 'src/app/models/appointment';
 
 @Component({
   selector: 'app-appointments-per-day',
@@ -17,73 +20,85 @@ export class AppointmentsPerDayComponent implements OnInit {
 
   constructor(
     public auth: AuthService,
-    public appointmentService: AppointmentsService
+    public appointmentService: AppointmentsService,
+    private loaderService: LoaderService
   ) {}
 
   ngOnInit(): void {
-    this.appointmentService.getAppointments().subscribe((appointments: any) => {
-      this.appointments = appointments;
+    this.appointmentService.getAppointments().subscribe({
+      next: (appointments: Appointment[]) => {
+        this.appointments = appointments;
 
-      const dates = this.appointments.map((appointment: any) => {
-        const dateOnly = new Date(appointment.appointmentDate)
-          .toISOString()
-          .split('T')[0];
-        return new Date(dateOnly);
-      });
+        const dates = this.appointments.map((appointment: Appointment) => {
+          const dateOnly = new Date(appointment.appointmentDate)
+            .toISOString()
+            .split('T')[0];
+          return new Date(dateOnly);
+        });
 
-      const result = dates.reduce((json: any, val: Date) => {
-        const utcTimestamp = Date.UTC(
-          val.getUTCFullYear(),
-          val.getUTCMonth(),
-          val.getUTCDate()
-        );
+        const result = dates.reduce((json: any, val: Date) => {
+          const utcTimestamp = Date.UTC(
+            val.getUTCFullYear(),
+            val.getUTCMonth(),
+            val.getUTCDate()
+          );
 
-        return { ...json, [utcTimestamp]: (json[utcTimestamp] || 0) + 1 };
-      }, {});
+          return { ...json, [utcTimestamp]: (json[utcTimestamp] || 0) + 1 };
+        }, {});
 
-      const formattedData = Object.entries(result).map(([key, value]) => {
-        return [Number(key), value];
-      });
+        const formattedData = Object.entries(result).map(([key, value]) => {
+          return [Number(key), value];
+        });
 
-      this.chart = Highcharts.chart(
-        'chartContainerPerDay',
-        {
-          xAxis: {
-            type: 'datetime',
-          },
-          chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'bar',
-          },
-          title: {
-            text: '',
-          },
-          plotOptions: {
-            bar: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              borderRadius: 5,
-              opacity: 0.8,
+        this.chart = Highcharts.chart(
+          'chartContainerPerDay',
+          {
+            xAxis: {
+              type: 'datetime',
             },
-          },
-          legend: {
-            layout: 'vertical',
-            floating: false,
-            borderRadius: 0,
-            borderWidth: 0,
-          },
-          series: [
-            {
+            chart: {
+              plotBackgroundColor: null,
+              plotBorderWidth: null,
+              plotShadow: false,
               type: 'bar',
-              name: 'Cantidad',
-              data: formattedData,
             },
-          ],
-        },
-        () => {}
-      );
+            title: {
+              text: '',
+            },
+            plotOptions: {
+              bar: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                borderRadius: 5,
+                opacity: 0.8,
+              },
+            },
+            legend: {
+              layout: 'vertical',
+              floating: false,
+              borderRadius: 0,
+              borderWidth: 0,
+            },
+            series: [
+              {
+                type: 'bar',
+                name: 'Cantidad',
+                data: formattedData,
+              },
+            ],
+          },
+          () => {}
+        );
+      },
+      error: (error: any) => {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Operación erronea!',
+          text: 'Error al cargar datos',
+        });
+        this.loaderService.hide();
+      },
     });
   }
 
