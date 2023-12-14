@@ -49,7 +49,12 @@ export class RegisterAdminComponent implements OnInit {
           Validators.maxLength(9),
         ]),
         obraSocial: new FormControl(''),
-        email: new FormControl('', [Validators.required, Validators.email]),
+        email: new FormControl('', [
+          Validators.required,
+          Validators.pattern(
+            '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+          ),
+        ]),
         password: new FormControl('', [
           Validators.required,
           Validators.minLength(6),
