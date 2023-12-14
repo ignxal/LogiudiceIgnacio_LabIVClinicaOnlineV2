@@ -7,6 +7,7 @@ import { AppointmentsService } from 'src/app/services/appointments.service';
 import { Appointment } from 'src/app/models/appointment';
 import * as Highcharts from 'highcharts';
 import { CapitalizeFirstLetterPipe } from 'src/app/pipes/capitalize-first-letter.pipe';
+import { RandomNumberPipe } from 'src/app/pipes/random-number.pipe';
 
 @Component({
   selector: 'app-appointments-specialty',
@@ -48,7 +49,9 @@ export class AppointmentsSpecialtyComponent implements OnInit {
         );
 
         const colors = Highcharts.getOptions().colors.map((c, i) =>
-          Highcharts.color(Highcharts.getOptions().colors[0])
+          Highcharts.color(
+            Highcharts.getOptions().colors[new RandomNumberPipe().transform()]
+          )
             .brighten((i - 3) / 7)
             .get()
         );

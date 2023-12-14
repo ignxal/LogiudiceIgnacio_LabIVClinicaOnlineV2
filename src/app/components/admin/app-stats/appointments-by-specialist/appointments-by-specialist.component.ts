@@ -4,6 +4,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { AppointmentsService } from 'src/app/services/appointments.service';
 import * as Highcharts from 'highcharts';
+import { RandomNumberPipe } from 'src/app/pipes/random-number.pipe';
 
 @Component({
   selector: 'app-appointments-by-specialist',
@@ -39,7 +40,9 @@ export class AppointmentsBySpecialistComponent implements OnInit {
       }));
 
       const colors = Highcharts.getOptions().colors.map((c, i) =>
-        Highcharts.color(Highcharts.getOptions().colors[2])
+        Highcharts.color(
+          Highcharts.getOptions().colors[new RandomNumberPipe().transform()]
+        )
           .brighten((i - 3) / 7)
           .get()
       );
