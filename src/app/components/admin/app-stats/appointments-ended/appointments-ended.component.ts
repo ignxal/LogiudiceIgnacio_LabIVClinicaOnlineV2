@@ -50,6 +50,7 @@ export class AppointmentsEndedComponent implements OnInit {
           'chartContainerEnded',
           {
             chart: {
+              backgroundColor: 'rgb(45, 49, 51)',
               plotBackgroundColor: null,
               plotBorderWidth: null,
               plotShadow: false,
@@ -67,13 +68,13 @@ export class AppointmentsEndedComponent implements OnInit {
                 opacity: 0.8,
                 dataLabels: [
                   {
-                    color: '#000',
+                    color: '#fff',
                     enabled: true,
                     format: '<b>{point.name}</b>',
                     distance: 0,
                   },
                   {
-                    color: '#000',
+                    color: '#fff',
                     enabled: true,
                     format: '<b>{point.percentage:.1f} %</b>',
                     distance: -75,

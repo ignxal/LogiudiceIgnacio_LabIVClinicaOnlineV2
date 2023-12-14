@@ -57,10 +57,15 @@ export class AppointmentsPerDayComponent implements OnInit {
               type: 'datetime',
             },
             chart: {
+              backgroundColor: 'rgb(45, 49, 51)',
               plotBackgroundColor: null,
               plotBorderWidth: null,
               plotShadow: false,
               type: 'bar',
+              style: {
+                fill: '#fff',
+                stroke: '#fff',
+              },
             },
             title: {
               text: '',
@@ -79,6 +84,7 @@ export class AppointmentsPerDayComponent implements OnInit {
               borderRadius: 0,
               borderWidth: 0,
             },
+
             series: [
               {
                 type: 'bar',
