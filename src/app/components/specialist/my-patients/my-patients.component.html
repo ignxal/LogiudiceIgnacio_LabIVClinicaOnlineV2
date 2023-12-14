@@ -9,10 +9,11 @@
         >
           <button
             type="button"
-            class="card btn btn-dark"
+            class="btn btn-circle btn-dark"
             data-bs-toggle="modal"
             data-bs-target="#medicalHistoryModal"
             (click)="openMedicalHistory(patient.uid)"
+            style="border-radius: 50%; border-color: #fff"
           >
             <img
               class="mx-auto"
@@ -26,7 +27,7 @@
             />
             <div class="card-body">
               <h5 class="card-title">
-                Nombre: {{ patient.name + " " + patient.lastName }}
+                {{ patient.name + " " + patient.lastName }}
               </h5>
             </div>
           </button>
