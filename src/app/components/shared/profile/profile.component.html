@@ -59,6 +59,13 @@
             >
               Modificar horario de atencion
             </button>
+            <button
+              type="button"
+              class="btn btn-dark"
+              (click)="downloadAppointmentsHistory()"
+            >
+              Descargar atenciones realizadas
+            </button>
           </div>
         </div>
         <div *ngIf="user.role == 'Admin'"></div>

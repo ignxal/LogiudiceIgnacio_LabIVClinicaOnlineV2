@@ -52,6 +52,18 @@ export class AppointmentsService {
   }
 
   getAppointmentsBySpecialist(id_specialist: string) {
+    let querys = [
+      where('id_specialist', '==', id_specialist),
+      where('status', '==', AppointmentStatus.Closed),
+    ];
+
+    return this.collection.getAllWhereSnapshot<Appointment>(
+      this.collecionName,
+      and(...querys)
+    );
+  }
+
+  getAppointmentsClosedBySpecialist(id_specialist: string) {
     let querys = [where('id_specialist', '==', id_specialist)];
 
     return this.collection.getAllWhereSnapshot<Appointment>(

@@ -6,6 +6,8 @@ import { MedicalHistoryService } from 'src/app/services/medicalhistory.service';
 import { AppointmentsService } from 'src/app/services/appointments.service';
 import { jsPDF } from 'jspdf';
 import Swal from 'sweetalert2';
+import { UserM } from 'src/app/models/user';
+import { Appointment } from 'src/app/models/appointment';
 
 @Component({
   selector: 'app-profile',
@@ -15,13 +17,14 @@ import Swal from 'sweetalert2';
 export class ProfileComponent implements OnInit {
   profileSpecialtiesList: any[] = [];
   user: any;
-  userData: any;
+  userData: UserM;
   patientAppointments: any;
   patientAppointmentsBySpecialty: any;
   day: string | undefined;
   days: any[] = [];
   specialty: any;
   patientMedicalHistory: any[] = [];
+  myAppointments!: Appointment[];
 
   daysData: Array<any> = [
     { name: 'Lunes', value: 'Lunes' },
@@ -46,8 +49,21 @@ export class ProfileComponent implements OnInit {
     this.user = this.auth.loggedUser;
     this.userService
       .getOne(this.user.uid)
-      .then((user: any) => {
+      .then((user: UserM) => {
         this.userData = user;
+
+        if (user.role == 'Specialist') {
+          this.appointmentService
+            .getAppointmentsBySpecialist(user.uid)
+            .subscribe({
+              next: (res) => {
+                this.myAppointments = res;
+              },
+              error: (err: any) => {
+                console.error(err);
+              },
+            });
+        }
       })
       .finally(() => {
         this.loaderService.hide();
@@ -217,6 +233,51 @@ export class ProfileComponent implements OnInit {
           });
         },
       });
+  }
+
+  downloadAppointmentsHistory() {
+    const today = new Date();
+    let line = 20;
+    today.toLocaleDateString('es-ES');
+    const PDF = new jsPDF('p', 'mm', 'a4');
+    let pageHeight = PDF.internal.pageSize.height - 10;
+
+    PDF.text(
+      `Historial de citas realizadas del especialista ${
+        this.userData.name + ' ' + this.userData.lastName
+      }`,
+      10,
+      10
+    );
+    PDF.addImage(
+      'https://firebasestorage.googleapis.com/v0/b/clinica-online-v2.appspot.com/o/pageIcon.png?alt=media&token=11489f28-b897-47b6-9c41-cdc60d0a63da',
+      'PNG',
+      150,
+      10,
+      50,
+      50
+    );
+    PDF.text(
+      `Fecha de emision: ${today.toLocaleDateString('es-ES')}`,
+      10,
+      line
+    );
+    line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+    this.myAppointments.forEach((x: Appointment) => {
+      PDF.text(
+        `-----------------------------------------------------`,
+        15,
+        line
+      );
+      line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+      PDF.text(`* Fecha: ${x.appointmentDate}`, 15, line);
+      line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+      PDF.text(`* Especialidad: ${x.specialty}`, 15, line);
+      line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+      PDF.text(`* Paciente: ${x.patientName}`, 15, line);
+      line > pageHeight ? (PDF.addPage(), (line = 20)) : (line += 10);
+    });
+    PDF.save('registro-atenciones' + '-' + this.userData.name + '.pdf');
   }
 
   download() {
