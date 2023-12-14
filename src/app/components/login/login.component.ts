@@ -22,33 +22,33 @@ export class LoginComponent {
   }[] = [
     {
       role: 'Patient',
-      email: 'lelelapancha@patient.com',
-      fullName: 'Lele Lapancha',
+      email: 'cijido1692@arensus.com',
+      fullName: 'Juan Perez',
       password: '123456',
     },
     {
       role: 'Patient',
-      email: 'duelelelapata@patient.com',
-      fullName: 'Duele Lapata',
+      email: 'bijivo7256@avucon.com',
+      fullName: 'Santa Dolores',
       password: '123456',
     },
     {
       role: 'Patient',
-      email: 'marcoantonio@patient.com',
+      email: 'kudrolokku@gufum.com',
       fullName: 'Marco Antonio',
       password: '123456',
     },
     {
       role: 'Specialist',
-      email: 'juanitoperez@waterisgone.com',
-      fullName: 'Juan Perez',
+      email: 'nxa27742@zslsz.com',
+      fullName: 'Mister Curador',
       password: '123456',
     },
     {
       role: 'Specialist',
-      email: 'deslelelapancha@specialist.com',
-      fullName: 'Deslele Lapancha',
-      password: 'qwerty',
+      email: 'uze0imp3l6@zipcatfish.com',
+      fullName: 'Esteban Salvador',
+      password: '123456',
     },
     {
       role: 'Admin',
