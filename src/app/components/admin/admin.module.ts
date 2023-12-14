@@ -12,6 +12,7 @@ import { AppStatsComponent } from './app-stats/app-stats.component';
 import { AppointmentsEndedComponent } from './app-stats/appointments-ended/appointments-ended.component';
 import { AppointmentsSpecialtyComponent } from './app-stats/appointments-specialty/appointments-specialty.component';
 import { AppointmentsPerDayComponent } from './app-stats/appointments-per-day/appointments-per-day.component';
+import { AppointmentsBySpecialistComponent } from './app-stats/appointments-by-specialist/appointments-by-specialist.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { AppointmentsPerDayComponent } from './app-stats/appointments-per-day/ap
     AppStatsComponent,
     AppointmentsSpecialtyComponent,
     AppointmentsPerDayComponent,
+    AppointmentsBySpecialistComponent,
   ],
   imports: [
     CommonModule,

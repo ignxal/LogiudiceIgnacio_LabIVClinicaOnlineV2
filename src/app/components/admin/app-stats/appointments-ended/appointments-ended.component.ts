@@ -106,7 +106,7 @@ export class AppointmentsEndedComponent implements OnInit {
     ) {
       const imgData = canvas.toDataURL('image/png');
       const doc = new jsPDF();
-      doc.text(`Cantidad de turnos solicitados por especialidad`, 10, 10);
+      doc.text(`Cantidad de turnos finalizados por especialista`, 10, 10);
       doc.addImage(imgData, 'PNG', 20, 50, 200, 80);
       doc.save('turnos-finalizados-por-especialista.pdf');
     });
