@@ -21,6 +21,8 @@ import { RolePipe } from './pipes/role.pipe';
 import { SpecialtiesPipe } from './pipes/specialties.pipe';
 import { SurveyValuesPipe } from './pipes/survey-values.pipe';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { RandomNumberPipe } from './pipes/random-number.pipe';
+import { CapitalizeFirstLetterPipe } from './pipes/capitalize-first-letter.pipe';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { HighchartsChartModule } from 'highcharts-angular';
     RolePipe,
     SpecialtiesPipe,
     SurveyValuesPipe,
+    RandomNumberPipe,
+    CapitalizeFirstLetterPipe,
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
