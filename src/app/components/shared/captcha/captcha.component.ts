@@ -24,7 +24,7 @@ export class CaptchaComponent implements OnInit {
   ngOnInit(): void {}
 
   onChange(value: any) {
-    if (value.length == 6) {
+    if (value.length >= 5) {
       setTimeout(() => {
         this.captchaForDirective = this.enteredCaptcha;
       }, 200);
@@ -32,7 +32,6 @@ export class CaptchaComponent implements OnInit {
   }
 
   createCaptcha() {
-    console.log('createCaptcha');
     this.generateCaptcha = true;
     setTimeout(() => {
       this.generateCaptcha = false;

@@ -6,6 +6,8 @@ import {
   Renderer2,
   SimpleChanges,
 } from '@angular/core';
+import { CaptchaService } from '../services/captcha.service';
+import { LoaderService } from '../services/loader.service';
 
 @Directive({
   selector: '[appCaptcha]',
@@ -13,36 +15,49 @@ import {
 export class CaptchaDirective {
   @Output() captcha = new EventEmitter<String>();
   @Output() captchaResult = new EventEmitter<boolean>();
-  @Input() requestCaptcha = false;
-  @Input() enteredCaptcha = false;
+  @Input() requestCaptcha: boolean = false;
+  @Input() enteredCaptcha: string;
 
   theCatpcha: any;
 
-  constructor() {}
+  constructor(
+    private captchaService: CaptchaService,
+    private loaderService: LoaderService
+  ) {}
 
   ngOnInit(): void {
     this.createCaptcha();
   }
 
   createCaptcha() {
-    let captcha = [];
-    for (let q = 0; q < 6; q++) {
-      if (q % 2 == 0) {
-        captcha[q] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
-      } else {
-        captcha[q] = Math.floor(Math.random() * 10 + 0);
-      }
-    }
-    const theCaptcha = captcha.join('');
-    this.theCatpcha = theCaptcha;
-    this.captcha.emit(theCaptcha);
+    this.loaderService.show();
+    this.captchaService.getOne().subscribe({
+      next: (x) => {
+        this.theCatpcha = x[0].value;
+        this.captcha.emit(x[0].img);
+        this.loaderService.hide();
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   validateCaptcha() {
-    this.captchaResult.emit(this.enteredCaptcha === this.theCatpcha);
+    this.captchaResult.emit(
+      this.enteredCaptcha.toLowerCase() === this.theCatpcha.toLowerCase()
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (
+      !changes ||
+      (!changes['requestCaptcha'] && !changes['enteredCaptcha']) ||
+      !this.theCatpcha
+    ) {
+      return;
+    }
+
     if (changes['requestCaptcha']) {
       this.createCaptcha();
     }
