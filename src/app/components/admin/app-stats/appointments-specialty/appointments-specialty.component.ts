@@ -6,6 +6,7 @@ import { jsPDF } from 'jspdf';
 import { AppointmentsService } from 'src/app/services/appointments.service';
 import { Appointment } from 'src/app/models/appointment';
 import * as Highcharts from 'highcharts';
+import { CapitalizeFirstLetterPipe } from 'src/app/pipes/capitalize-first-letter.pipe';
 
 @Component({
   selector: 'app-appointments-specialty',
@@ -41,7 +42,7 @@ export class AppointmentsSpecialtyComponent implements OnInit {
 
         const data2: { name: string; y: number }[] = Object.entries(result).map(
           ([key, value]) => ({
-            name: key,
+            name: new CapitalizeFirstLetterPipe().transform(key),
             y: Number(value),
           })
         );
