@@ -11,6 +11,7 @@ import { AdminRequestAppointmentComponent } from './admin-request-appointment/ad
 import { AppStatsComponent } from './app-stats/app-stats.component';
 import { AppointmentsEndedComponent } from './app-stats/appointments-ended/appointments-ended.component';
 import { AppointmentsSpecialtyComponent } from './app-stats/appointments-specialty/appointments-specialty.component';
+import { AppointmentsPerDayComponent } from './app-stats/appointments-per-day/appointments-per-day.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AppointmentsSpecialtyComponent } from './app-stats/appointments-special
     AppointmentsEndedComponent,
     AppStatsComponent,
     AppointmentsSpecialtyComponent,
+    AppointmentsPerDayComponent,
   ],
   imports: [
     CommonModule,
